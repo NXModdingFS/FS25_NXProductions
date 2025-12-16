@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="105">
+	<author>NX Modding</author>
+	<version>1.0.0.0</version>
+	<title>
+		<en>NX Productions</en>
+		<de>Produktionsübersicht</de>
+	</title>
+    <description>
+        <en><![CDATA[View all your productions with fill types, capacities, and monthly income.
+        
+Press Shift + P to open the Production Overview.
+
+Features:
+- Shows all production facilities
+- Displays fill types with current levels and capacities
+- Shows monthly income per production
+- Total monthly income summary
+- Toggle between inputs and outputs view]]></en>
+        <de><![CDATA[Zeigt alle Produktionen mit Fülltypen, Kapazitäten und monatlichem Einkommen an.
+
+Drücke Shift + P um die Produktionsübersicht zu öffnen.
+
+Features:
+- Zeigt alle Produktionsanlagen
+- Zeigt Fülltypen mit aktuellen Füllständen und Kapazitäten
+- Zeigt monatliches Einkommen pro Produktion
+- Gesamtmonatliche Einkommensübersicht
+- Umschalten zwischen Eingängen und Ausgängen]]></de>
+    </description>
+	
+	<iconFilename>icon.dds</iconFilename>
+	<multiplayer supported="true" />
+	<extraSourceFiles>
+		<sourceFile filename="ProductionOverview.lua" />
+		<sourceFile filename="RegisterPlayerActionEvents.lua" />
+	</extraSourceFiles>
+
+    <actions>
+      	<action name="SHOW_PRODUCTION_DLG" category="SYSTEM" />
+  	</actions>	
+  	<inputBinding>
+      	<actionBinding action="SHOW_PRODUCTION_DLG">
+        	<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_p" />
+      	</actionBinding>
+  	</inputBinding>	
+	<l10n>
+		<text name="input_SHOW_PRODUCTION_DLG">
+			<de>Produktionsübersicht</de>
+			<en>Production Overview</en>
+		</text>
+
+        <text name="ui_productionDlg_title">
+			<de>Produktionsübersicht</de>
+			<en>Production Overview</en>
+		</text>		
+        <text name="ui_productionDlg_btnClose">
+			<de>Schließen</de>	
+			<en>Close</en>
+		</text>		
+
+        <text name="ui_productionDlg_hbName">
+			<de>Name</de>	
+			<en>Name</en>
+		</text>
+        <text name="ui_productionDlg_hbInputs">
+			<de>Eingänge</de>	
+			<en>Inputs</en>
+		</text>		
+        <text name="ui_productionDlg_hbOutputs">
+			<de>Ausgänge</de>	
+			<en>Outputs</en>
+		</text>		
+        <text name="ui_productionDlg_hbFillType">
+			<de>Fülltyp</de>	
+			<en>Fill Type</en>
+		</text>		
+        <text name="ui_productionDlg_hbCapacity">
+			<de>Kapazität</de>	
+			<en>Capacity</en>
+		</text>		
+        <text name="ui_productionDlg_hbIncome">
+			<de>Monatl. Einkommen</de>	
+			<en>Monthly Income</en>
+		</text>
+        <text name="ui_productionDlg_totalIncome">
+			<de>Gesamteinkommen/Monat:</de>	
+			<en>Total Income/Month:</en>
+		</text>
+        <text name="ui_productionDlg_noProductions">
+			<de>Keine Produktionen gefunden</de>	
+			<en>No productions found</en>
+		</text>
+        <text name="ui_productionDlg_btnShowOutputs">
+			<de>Zeige Ausgänge</de>	
+			<en>Show Outputs</en>
+		</text>
+        <text name="ui_productionDlg_btnShowInputs">
+			<de>Zeige Eingänge</de>	
+			<en>Show Inputs</en>
+		</text>
+        <text name="ui_productionDlg_btnShowRecipes">
+			<de>Zeige Rezepte</de>	
+			<en>Show Recipes</en>
+		</text>
+        <text name="ui_productionDlg_btnShowFillTypes">
+			<de>Zeige Fülltypen</de>	
+			<en>Show Fill Types</en>
+		</text>
+        <text name="ui_productionDlg_hbRecipes">
+			<de>Rezepte</de>	
+			<en>Recipes</en>
+		</text>
+	</l10n>
+</modDesc>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
+    <GuiElement profile="fs25_dialogBg" id="dialogElement" size="1400px 800px">        
+        <ThreePartBitmap profile="fs25_dialogBgMiddle" />
+        <ThreePartBitmap profile="fs25_dialogBgTop" />
+        <ThreePartBitmap profile="fs25_dialogBgBottom" />
+        <GuiElement profile="fs25_dialogContentContainer">
+            <Text profile="dialogTitle" text="$l10n_ui_productionDlg_title" id="dialogTitleElement" position="0px -30px" />
+
+            <!-- Table Header -->
+            <Bitmap profile="ProductionDlgList" id="tableHeaderBox" position="45px -80px" size="1250px 50px">
+                <Text profile="ProductionDlgHeaderLeft" position="15px 0px" size="150px 40.77px" text="$l10n_ui_productionDlg_hbName"/>
+                <Text profile="ProductionDlgHeaderLeft" position="180px 0px" size="400px 40.77px" text="$l10n_ui_productionDlg_hbInputs" id="fillTypeHeader"/>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+            </Bitmap>
+
+            <!-- Main List -->
+            <SmoothList profile="ProductionDlgList" id="overviewTable" position="50px -135px" size="1245px 540px" focusInit="onOpen" focusChangeTop="nil" focusChangeBottom="nil">
+                <ListItem profile="ProductionDlgListItem" name="orderRowTemplate" size="1250px 40px">
+                    <!-- Production Name -->
+                    <Text profile="ProductionDlgRowCellLeft" position="5px 0px" size="160px 40px" name="productionName" textLayoutMode="scrolling"/>
+                    
+                    <!-- Fill Type 1 -->
+                    <Bitmap position="180px 8px" size="18px 18px" name="fillIcon1" imageColor="1 1 1 1" />
+                    <Text profile="ProductionDlgRowCellLeft" position="202px 0px" size="160px 40px" name="fillCapacity1" textSize="13px"/>
+                    
+                    <!-- Fill Type 2 -->
+                    <Bitmap position="380px 8px" size="18px 18px" name="fillIcon2" imageColor="1 1 1 1" />
+                    <Text profile="ProductionDlgRowCellLeft" position="402px 0px" size="160px 40px" name="fillCapacity2" textSize="13px"/>
+                    
+                    <!-- Fill Type 3 -->
+                    <Bitmap position="580px 8px" size="18px 18px" name="fillIcon3" imageColor="1 1 1 1" />
+                    <Text profile="ProductionDlgRowCellLeft" position="602px 0px" size="160px 40px" name="fillCapacity3" textSize="13px"/>
+                    
+                    <!-- Fill Type 4 -->
+                    <Bitmap position="780px 8px" size="18px 18px" name="fillIcon4" imageColor="1 1 1 1" />
+                    <Text profile="ProductionDlgRowCellLeft" position="802px 0px" size="160px 40px" name="fillCapacity4" textSize="13px"/>
+                    
+                    <!-- Fill Type 5 -->
+                    <Bitmap position="980px 8px" size="18px 18px" name="fillIcon5" imageColor="1 1 1 1" />
+                    <Text profile="ProductionDlgRowCellLeft" position="1002px 0px" size="160px 40px" name="fillCapacity5" textSize="13px"/>
+                </ListItem>
+            </SmoothList>
+
+            <ThreePartBitmap profile="fs25_listSliderBox" position="-70px -100px" size="12px 545px" with="anchorTopRight">
+                <Slider profile="fs25_listSlider" size="6px 537px" dataElementId="overviewTable" id="tableSlider" />
+            </ThreePartBitmap>  
+        </GuiElement>
+
+        <!-- Buttons and Total Income at Bottom -->
+        <BoxLayout profile="fs25_dialogButtonBox" size="1250px 60px">
+            <!-- Total Income Display -->
+            <GuiElement profile="emptyPanel" position="20px -60px" size="600px 40px">
+                <Text profile="ProductionDlgHeaderLeft" position="0px 0px" size="300px 40px" text="$l10n_ui_productionDlg_totalIncome"/>
+                <Text profile="ProductionDlgTotalIncome" position="310px 0px" size="200px 40px" text="$0" id="totalIncomeText"/>
+            </GuiElement>
+            
+            <!-- Toggle Button -->
+            <Button profile="buttonOK" text="$l10n_ui_productionDlg_btnShowOutputs" onClick="onClickToggle" id="toggleButton" />
+            
+            <!-- Recipe Button -->
+            <Button profile="buttonOK" text="$l10n_ui_productionDlg_btnShowRecipes" onClick="onClickRecipes" id="recipeButton" />
+            
+            <Button profile="buttonBack" text="$l10n_ui_productionDlg_btnClose" onClick="onClickBack" />
+        </BoxLayout>
+    </GuiElement>
+</GUI>
