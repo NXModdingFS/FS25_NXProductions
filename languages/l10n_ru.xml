@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributions>
+    </translationContributions>
+    <texts>
+        <text name="input_SHOW_PRODUCTION_DLG" text="Производства NX" />
+        <text name="ui_productionDlg_title" text="Производства NX" />
+        <text name="ui_productionDlg_btnClose" text="Закрыть" />
+        <text name="ui_productionDlg_btnShowOutputs" text="Показать выходы" />
+        <text name="ui_productionDlg_btnShowInputs" text="Показать входы" />
+        <text name="ui_productionDlg_btnShowRecipes" text="Показать рецепты" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="Показать типы заполнения" />
+        <text name="ui_productionDlg_btnShowFinances" text="Показать финансы" />
+        <text name="ui_productionDlg_btnHideFinances" text="Скрыть финансы" />
+        <text name="ui_productionDlg_hbName" text="Название" />
+        <text name="ui_productionDlg_hbInputs" text="Входы" />
+        <text name="ui_productionDlg_hbOutputs" text="Выходы" />
+        <text name="ui_productionDlg_hbFillType" text="Тип заполнения" />
+        <text name="ui_productionDlg_hbCapacity" text="Вместимость" />
+        <text name="ui_productionDlg_hbIncome" text="Ежемесячный доход" />
+        <text name="ui_productionDlg_hbRecipes" text="Рецепты" />
+        <text name="ui_productionDlg_hbFinances" text="Финансы" />
+        <text name="ui_productionDlg_hbRevenue" text="Доходы" />
+        <text name="ui_productionDlg_hbCosts" text="Расходы" />
+        <text name="ui_productionDlg_hbProfit" text="Чистая прибыль" />
+        <text name="ui_productionDlg_totalIncome" text="Общий доход/месяц:" />
+        <text name="ui_productionDlg_noProductions" text="Производства не найдены" />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="Производства NX" />
+        <text name="production_menu_automanage" text="Автоматическое управление производствами" />
+        <text name="production_menu_automanage_tooltip" text="Автоматически включает или отключает производства в зависимости от наличия входных ресурсов и вместимости выходов" />
+        <text name="production_setting_automanage_on" text="Включено" />
+        <text name="production_setting_automanage_off" text="Выключено" />
+    </texts>
+</l10n>

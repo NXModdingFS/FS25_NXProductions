@@ -3,8 +3,8 @@
     <translationContributions>
     </translationContributions>
     <texts>
-        <text name="input_SHOW_PRODUCTION_DLG" text="Production Overview" />
-        <text name="ui_productionDlg_title" text="Production Overview" />
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX Productions" />
+        <text name="ui_productionDlg_title" text="NX Productions" />
         <text name="ui_productionDlg_btnClose" text="Close" />
         <text name="ui_productionDlg_btnShowOutputs" text="Show Outputs" />
         <text name="ui_productionDlg_btnShowInputs" text="Show Inputs" />
@@ -25,5 +25,12 @@
         <text name="ui_productionDlg_hbProfit" text="Net Profit" />
         <text name="ui_productionDlg_totalIncome" text="Total Income/Month:" />
         <text name="ui_productionDlg_noProductions" text="No productions found" />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="NX Productions" />
+        <text name="production_menu_automanage" text="Auto-Manage Productions" />
+        <text name="production_menu_automanage_tooltip" text="Automatically activate/deactivate productions based on input availability and output capacity" />
+        <text name="production_setting_automanage_on" text="Enabled" />
+        <text name="production_setting_automanage_off" text="Disabled" />
     </texts>
 </l10n>

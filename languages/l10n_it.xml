@@ -3,27 +3,34 @@
     <translationContributions>
     </translationContributions>
     <texts>
-        <text name="input_SHOW_PRODUCTION_DLG" text="Panoramica Produzione" />
-        <text name="ui_productionDlg_title" text="Panoramica Produzione" />
+        <text name="input_SHOW_PRODUCTION_DLG" text="Produzioni NX" />
+        <text name="ui_productionDlg_title" text="Produzioni NX" />
         <text name="ui_productionDlg_btnClose" text="Chiudi" />
-        <text name="ui_productionDlg_btnShowOutputs" text="Mostra Uscite" />
-        <text name="ui_productionDlg_btnShowInputs" text="Mostra Ingressi" />
-        <text name="ui_productionDlg_btnShowRecipes" text="Mostra Ricette" />
-        <text name="ui_productionDlg_btnShowFillTypes" text="Mostra Tipi di Riempimento" />
-        <text name="ui_productionDlg_btnShowFinances" text="Mostra Finanze" />
-        <text name="ui_productionDlg_btnHideFinances" text="Nascondi Finanze" />
+        <text name="ui_productionDlg_btnShowOutputs" text="Mostra uscite" />
+        <text name="ui_productionDlg_btnShowInputs" text="Mostra ingressi" />
+        <text name="ui_productionDlg_btnShowRecipes" text="Mostra ricette" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="Mostra tipi di riempimento" />
+        <text name="ui_productionDlg_btnShowFinances" text="Mostra finanze" />
+        <text name="ui_productionDlg_btnHideFinances" text="Nascondi finanze" />
         <text name="ui_productionDlg_hbName" text="Nome" />
         <text name="ui_productionDlg_hbInputs" text="Ingressi" />
         <text name="ui_productionDlg_hbOutputs" text="Uscite" />
-        <text name="ui_productionDlg_hbFillType" text="Tipo di Riempimento" />
+        <text name="ui_productionDlg_hbFillType" text="Tipo di riempimento" />
         <text name="ui_productionDlg_hbCapacity" text="Capacità" />
-        <text name="ui_productionDlg_hbIncome" text="Reddito Mensile" />
+        <text name="ui_productionDlg_hbIncome" text="Entrate mensili" />
         <text name="ui_productionDlg_hbRecipes" text="Ricette" />
         <text name="ui_productionDlg_hbFinances" text="Finanze" />
         <text name="ui_productionDlg_hbRevenue" text="Entrate" />
         <text name="ui_productionDlg_hbCosts" text="Costi" />
-        <text name="ui_productionDlg_hbProfit" text="Profitto Netto" />
-        <text name="ui_productionDlg_totalIncome" text="Reddito Totale/Mese:" />
+        <text name="ui_productionDlg_hbProfit" text="Profitto netto" />
+        <text name="ui_productionDlg_totalIncome" text="Entrate totali/mese:" />
         <text name="ui_productionDlg_noProductions" text="Nessuna produzione trovata" />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="Produzioni NX" />
+        <text name="production_menu_automanage" text="Gestione automatica delle produzioni" />
+        <text name="production_menu_automanage_tooltip" text="Attiva o disattiva automaticamente le produzioni in base alla disponibilità degli ingressi e alla capacità delle uscite" />
+        <text name="production_setting_automanage_on" text="Attivato" />
+        <text name="production_setting_automanage_off" text="Disattivato" />
     </texts>
 </l10n>

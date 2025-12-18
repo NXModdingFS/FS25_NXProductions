@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributions>
+    </translationContributions>
+    <texts>
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX 생산" />
+        <text name="ui_productionDlg_title" text="NX 생산" />
+        <text name="ui_productionDlg_btnClose" text="닫기" />
+        <text name="ui_productionDlg_btnShowOutputs" text="출력 표시" />
+        <text name="ui_productionDlg_btnShowInputs" text="입력 표시" />
+        <text name="ui_productionDlg_btnShowRecipes" text="레시피 표시" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="채우기 유형 표시" />
+        <text name="ui_productionDlg_btnShowFinances" text="재무 표시" />
+        <text name="ui_productionDlg_btnHideFinances" text="재무 숨기기" />
+        <text name="ui_productionDlg_hbName" text="이름" />
+        <text name="ui_productionDlg_hbInputs" text="입력" />
+        <text name="ui_productionDlg_hbOutputs" text="출력" />
+        <text name="ui_productionDlg_hbFillType" text="채우기 유형" />
+        <text name="ui_productionDlg_hbCapacity" text="용량" />
+        <text name="ui_productionDlg_hbIncome" text="월간 수입" />
+        <text name="ui_productionDlg_hbRecipes" text="레시피" />
+        <text name="ui_productionDlg_hbFinances" text="재무" />
+        <text name="ui_productionDlg_hbRevenue" text="수익" />
+        <text name="ui_productionDlg_hbCosts" text="비용" />
+        <text name="ui_productionDlg_hbProfit" text="순이익" />
+        <text name="ui_productionDlg_totalIncome" text="월간 총수입:" />
+        <text name="ui_productionDlg_noProductions" text="생산 항목을 찾을 수 없습니다" />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="NX 생산" />
+        <text name="production_menu_automanage" text="생산 자동 관리" />
+        <text name="production_menu_automanage_tooltip" text="입력 가능 여부와 출력 용량에 따라 생산을 자동으로 활성화 또는 비활성화합니다" />
+        <text name="production_setting_automanage_on" text="활성화됨" />
+        <text name="production_setting_automanage_off" text="비활성화됨" />
+    </texts>
+</l10n>

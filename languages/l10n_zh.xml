@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributions>
+    </translationContributions>
+    <texts>
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX 生产" />
+        <text name="ui_productionDlg_title" text="NX 生产" />
+        <text name="ui_productionDlg_btnClose" text="关闭" />
+        <text name="ui_productionDlg_btnShowOutputs" text="显示输出" />
+        <text name="ui_productionDlg_btnShowInputs" text="显示输入" />
+        <text name="ui_productionDlg_btnShowRecipes" text="显示配方" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="显示填充类型" />
+        <text name="ui_productionDlg_btnShowFinances" text="显示财务" />
+        <text name="ui_productionDlg_btnHideFinances" text="隐藏财务" />
+        <text name="ui_productionDlg_hbName" text="名称" />
+        <text name="ui_productionDlg_hbInputs" text="输入" />
+        <text name="ui_productionDlg_hbOutputs" text="输出" />
+        <text name="ui_productionDlg_hbFillType" text="填充类型" />
+        <text name="ui_productionDlg_hbCapacity" text="容量" />
+        <text name="ui_productionDlg_hbIncome" text="每月收入" />
+        <text name="ui_productionDlg_hbRecipes" text="配方" />
+        <text name="ui_productionDlg_hbFinances" text="财务" />
+        <text name="ui_productionDlg_hbRevenue" text="收入" />
+        <text name="ui_productionDlg_hbCosts" text="成本" />
+        <text name="ui_productionDlg_hbProfit" text="净利润" />
+        <text name="ui_productionDlg_totalIncome" text="每月总收入：" />
+        <text name="ui_productionDlg_noProductions" text="未找到生产项目" />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="NX 生产" />
+        <text name="production_menu_automanage" text="自动管理生产" />
+        <text name="production_menu_automanage_tooltip" text="根据输入可用性和输出容量自动启用或停用生产" />
+        <text name="production_setting_automanage_on" text="已启用" />
+        <text name="production_setting_automanage_off" text="已禁用" />
+    </texts>
+</l10n>

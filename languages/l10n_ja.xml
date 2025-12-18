@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributions>
+    </translationContributions>
+    <texts>
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX 生産" />
+        <text name="ui_productionDlg_title" text="NX 生産" />
+        <text name="ui_productionDlg_btnClose" text="閉じる" />
+        <text name="ui_productionDlg_btnShowOutputs" text="出力を表示" />
+        <text name="ui_productionDlg_btnShowInputs" text="入力を表示" />
+        <text name="ui_productionDlg_btnShowRecipes" text="レシピを表示" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="充填タイプを表示" />
+        <text name="ui_productionDlg_btnShowFinances" text="財務を表示" />
+        <text name="ui_productionDlg_btnHideFinances" text="財務を非表示" />
+        <text name="ui_productionDlg_hbName" text="名前" />
+        <text name="ui_productionDlg_hbInputs" text="入力" />
+        <text name="ui_productionDlg_hbOutputs" text="出力" />
+        <text name="ui_productionDlg_hbFillType" text="充填タイプ" />
+        <text name="ui_productionDlg_hbCapacity" text="容量" />
+        <text name="ui_productionDlg_hbIncome" text="月間収入" />
+        <text name="ui_productionDlg_hbRecipes" text="レシピ" />
+        <text name="ui_productionDlg_hbFinances" text="財務" />
+        <text name="ui_productionDlg_hbRevenue" text="収益" />
+        <text name="ui_productionDlg_hbCosts" text="コスト" />
+        <text name="ui_productionDlg_hbProfit" text="純利益" />
+        <text name="ui_productionDlg_totalIncome" text="月間総収入：" />
+        <text name="ui_productionDlg_noProductions" text="生産が見つかりません" />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="NX 生産" />
+        <text name="production_menu_automanage" text="生産の自動管理" />
+        <text name="production_menu_automanage_tooltip" text="入力の可用性と出力容量に基づいて生産を自動的に有効または無効にします" />
+        <text name="production_setting_automanage_on" text="有効" />
+        <text name="production_setting_automanage_off" text="無効" />
+    </texts>
+</l10n>

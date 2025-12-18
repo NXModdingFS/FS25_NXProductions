@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributions>
+    </translationContributions>
+    <texts>
+        <text name="input_SHOW_PRODUCTION_DLG" text="Produkce NX" />
+        <text name="ui_productionDlg_title" text="Produkce NX" />
+        <text name="ui_productionDlg_btnClose" text="Zavřít" />
+        <text name="ui_productionDlg_btnShowOutputs" text="Zobrazit výstupy" />
+        <text name="ui_productionDlg_btnShowInputs" text="Zobrazit vstupy" />
+        <text name="ui_productionDlg_btnShowRecipes" text="Zobrazit recepty" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="Zobrazit typy plnění" />
+        <text name="ui_productionDlg_btnShowFinances" text="Zobrazit finance" />
+        <text name="ui_productionDlg_btnHideFinances" text="Skrýt finance" />
+        <text name="ui_productionDlg_hbName" text="Název" />
+        <text name="ui_productionDlg_hbInputs" text="Vstupy" />
+        <text name="ui_productionDlg_hbOutputs" text="Výstupy" />
+        <text name="ui_productionDlg_hbFillType" text="Typ plnění" />
+        <text name="ui_productionDlg_hbCapacity" text="Kapacita" />
+        <text name="ui_productionDlg_hbIncome" text="Měsíční příjem" />
+        <text name="ui_productionDlg_hbRecipes" text="Recepty" />
+        <text name="ui_productionDlg_hbFinances" text="Finance" />
+        <text name="ui_productionDlg_hbRevenue" text="Příjmy" />
+        <text name="ui_productionDlg_hbCosts" text="Náklady" />
+        <text name="ui_productionDlg_hbProfit" text="Čistý zisk" />
+        <text name="ui_productionDlg_totalIncome" text="Celkový příjem/měsíc:" />
+        <text name="ui_productionDlg_noProductions" text="Nebyly nalezeny žádné produkce" />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="Produkce NX" />
+        <text name="production_menu_automanage" text="Automatická správa produkcí" />
+        <text name="production_menu_automanage_tooltip" text="Automaticky zapíná nebo vypíná produkce podle dostupnosti vstupů a kapacity výstupů" />
+        <text name="production_setting_automanage_on" text="Zapnuto" />
+        <text name="production_setting_automanage_off" text="Vypnuto" />
+    </texts>
+</l10n>
