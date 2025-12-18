@@ -13,8 +13,10 @@ function ProductionDlgFrame.new(target, custom_mt)
 	dbPrintf("ProductionDlgFrame:new()")
 	local self = MessageDialog.new(target, custom_mt or DlgFrame_mt)
     self.productions = {}
-	self.showInputs = true  -- Toggle state: true = inputs, false = outputs
-	self.showRecipes = false  -- Toggle state: false = fill types, true = recipes
+	self.displayRows = {}  -- Flattened list for display
+	self.showInputs = true
+	self.showRecipes = false
+	self.showFinances = false
 	return self
 end
 
@@ -34,11 +36,8 @@ function ProductionDlgFrame:onOpen()
 	dbPrintf("ProductionDlgFrame:onOpen()")
 	ProductionDlgFrame:superClass().onOpen(self)
 
-	-- Update button text based on current mode
 	self:updateToggleButtonText()
 	self:updateRecipeButtonText()
-
-	-- Fill data structure with production data
 	self:loadProductionData()
 
 	self:setSoundSuppressed(true)
@@ -48,7 +47,6 @@ end
 
 function ProductionDlgFrame:loadProductionData()
 	self.productions = {}
-	local totalMonthlyIncome = 0
 
 	if g_currentMission ~= nil and g_currentMission.productionChainManager ~= nil then
 		for _, productionPoint in pairs(g_currentMission.productionChainManager.productionPoints) do
@@ -59,24 +57,22 @@ function ProductionDlgFrame:loadProductionData()
 					outputFillTypes = {},
 					recipes = {},
 					monthlyIncome = 0,
+					monthlyCosts = 0,
+					monthlyRevenue = 0,
 					productionPoint = productionPoint
 				}
 
-				-- Get fill levels from storage
 				if productionPoint.storage ~= nil then
-					-- First, build sets of input and output fill type indices from productions
 					local inputFillTypeIndices = {}
 					local outputFillTypeIndices = {}
 					
 					if productionPoint.productions ~= nil then
 						for _, production in pairs(productionPoint.productions) do
-							-- Check inputs
 							if production.inputs ~= nil then
 								for _, input in pairs(production.inputs) do
 									inputFillTypeIndices[input.type] = true
 								end
 							end
-							-- Check outputs
 							if production.outputs ~= nil then
 								for _, output in pairs(production.outputs) do
 									outputFillTypeIndices[output.type] = true
@@ -85,7 +81,6 @@ function ProductionDlgFrame:loadProductionData()
 						end
 					end
 					
-					-- Now categorize all storage fill types
 					for fillTypeIndex, _ in pairs(productionPoint.storage.fillTypes) do
 						local fillLevel = productionPoint.storage:getFillLevel(fillTypeIndex)
 						local capacity = productionPoint.storage:getCapacity(fillTypeIndex)
@@ -103,11 +98,9 @@ function ProductionDlgFrame:loadProductionData()
 								hudOverlayFilename = fillType.hudOverlayFilename
 							}
 
-							-- Determine if this is an input or output based on production recipes
 							local isInput = inputFillTypeIndices[fillTypeIndex] == true
 							local isOutput = outputFillTypeIndices[fillTypeIndex] == true
 
-							-- Add to appropriate list (some fill types might be both input and output)
 							if isInput then
 								table.insert(prodData.inputFillTypes, fillTypeData)
 							end
@@ -115,7 +108,6 @@ function ProductionDlgFrame:loadProductionData()
 								table.insert(prodData.outputFillTypes, fillTypeData)
 							end
 							
-							-- If neither input nor output was detected, assume it's an output (fallback)
 							if not isInput and not isOutput then
 								table.insert(prodData.outputFillTypes, fillTypeData)
 							end
@@ -123,7 +115,6 @@ function ProductionDlgFrame:loadProductionData()
 					end
 				end
 
-				-- Sort fill types by name
 				table.sort(prodData.inputFillTypes, function(a, b)
 					return a.title < b.title
 				end)
@@ -131,14 +122,12 @@ function ProductionDlgFrame:loadProductionData()
 					return a.title < b.title
 				end)
 
-				-- Collect active recipes
 				if productionPoint.productions ~= nil then
 					for _, production in pairs(productionPoint.productions) do
 						if production.status ~= nil and production.status ~= ProductionPoint.PROD_STATUS.INACTIVE then
 							local recipeName = production.name or "Unknown Recipe"
 							local isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING
 							
-							-- Get inputs for this recipe
 							local inputs = {}
 							if production.inputs ~= nil then
 								for _, input in pairs(production.inputs) do
@@ -153,7 +142,6 @@ function ProductionDlgFrame:loadProductionData()
 								end
 							end
 							
-							-- Get outputs for this recipe
 							local outputs = {}
 							if production.outputs ~= nil then
 								for _, output in pairs(production.outputs) do
@@ -178,30 +166,101 @@ function ProductionDlgFrame:loadProductionData()
 					end
 				end
 
-				-- Calculate monthly income (approximate based on last hour's profit * 24 * 30)
-				if productionPoint.lastHourRevenue ~= nil and productionPoint.lastHourCosts ~= nil then
-					local hourlyProfit = productionPoint.lastHourRevenue - productionPoint.lastHourCosts
-					prodData.monthlyIncome = hourlyProfit * 24 * 30
-					totalMonthlyIncome = totalMonthlyIncome + prodData.monthlyIncome
+				-- Calculate financial data
+				prodData.monthlyRevenue = 0
+				prodData.monthlyCosts = 0
+				
+				-- Get days per month from game settings
+				local daysPerMonth = 1
+				if g_currentMission ~= nil and g_currentMission.missionInfo ~= nil and g_currentMission.missionInfo.timeScale ~= nil then
+					daysPerMonth = g_currentMission.missionInfo.timeScale
 				end
+				
+				-- Calculate revenue from outputs based on their sell prices
+				for _, fillType in pairs(prodData.outputFillTypes) do
+					local fillTypeIndex = g_fillTypeManager:getFillTypeIndexByName(fillType.name)
+					if fillTypeIndex ~= nil then
+						local pricePerLiter = g_currentMission.economyManager:getPricePerLiter(fillTypeIndex)
+						if pricePerLiter ~= nil then
+							-- Calculate potential revenue if all outputs were sold
+							prodData.monthlyRevenue = prodData.monthlyRevenue + (fillType.liters * pricePerLiter)
+						end
+					end
+				end
+				
+				-- Calculate costs from active recipes
+				if productionPoint.productions ~= nil then
+					for _, production in pairs(productionPoint.productions) do
+						if production.status == ProductionPoint.PROD_STATUS.RUNNING then
+							-- Calculate costs per cycle
+							local cyclesCostPerHour = 0
+							if production.costsPerActiveHour ~= nil then
+								cyclesCostPerHour = production.costsPerActiveHour
+							end
+							prodData.monthlyCosts = prodData.monthlyCosts + (cyclesCostPerHour * 24 * daysPerMonth)
+						end
+					end
+				end
+				
+				prodData.monthlyIncome = prodData.monthlyRevenue - prodData.monthlyCosts
 
 				table.insert(self.productions, prodData)
 			end
 		end
 	end
 
-	-- Sort productions by name
 	table.sort(self.productions, function(a, b)
 		return a.name < b.name
 	end)
 
-	-- Update total income text
-	if self.totalIncomeText ~= nil then
-		self.totalIncomeText:setText(string.format("$%s", self:formatNumber(math.floor(totalMonthlyIncome))))
-	end
-
-	-- Reload table data
+	-- Build display rows
+	self:buildDisplayRows()
 	self.overviewTable:reloadData()
+end
+
+function ProductionDlgFrame:buildDisplayRows()
+	self.displayRows = {}
+	
+	for _, prod in ipairs(self.productions) do
+		local fillTypes
+		
+		if self.showFinances then
+			-- For finances view, we just show one row per production
+			table.insert(self.displayRows, {
+				production = prod,
+				rowType = "finance",
+				fillTypes = {},
+				startIndex = 1,
+				endIndex = 0
+			})
+		else
+			fillTypes = self.showInputs and prod.inputFillTypes or prod.outputFillTypes
+			
+			if self.showRecipes then
+				fillTypes = prod.recipes
+			end
+			
+			-- Row 1: Items 1-5 (always add)
+			table.insert(self.displayRows, {
+				production = prod,
+				rowType = "row1",
+				fillTypes = fillTypes,
+				startIndex = 1,
+				endIndex = 5
+			})
+			
+			-- Row 2: Items 6-10 (only if more than 5 items)
+			if #fillTypes > 5 then
+				table.insert(self.displayRows, {
+					production = prod,
+					rowType = "row2",
+					fillTypes = fillTypes,
+					startIndex = 6,
+					endIndex = 10
+				})
+			end
+		end
+	end
 end
 
 function ProductionDlgFrame:updateToggleButtonText()
@@ -213,7 +272,6 @@ function ProductionDlgFrame:updateToggleButtonText()
 		end
 	end
 	
-	-- Update header text
 	if self.fillTypeHeader ~= nil then
 		if self.showInputs then
 			self.fillTypeHeader:setText(g_i18n:getText("ui_productionDlg_hbInputs"))
@@ -233,25 +291,57 @@ function ProductionDlgFrame:updateRecipeButtonText()
 	end
 end
 
+function ProductionDlgFrame:onClickFinances()
+	dbPrintf("ProductionDlgFrame:onClickFinances()")
+	self.showFinances = not self.showFinances
+	
+	-- Update finances button text
+	if self.financesButton ~= nil then
+		if self.showFinances then
+			self.financesButton:setText(g_i18n:getText("ui_productionDlg_btnHideFinances"))
+		else
+			self.financesButton:setText(g_i18n:getText("ui_productionDlg_btnShowFinances"))
+		end
+	end
+	
+	-- Hide/show other buttons
+	if self.toggleButton ~= nil then
+		self.toggleButton:setVisible(not self.showFinances)
+	end
+	if self.recipeButton ~= nil then
+		self.recipeButton:setVisible(not self.showFinances)
+	end
+	
+	-- Toggle between header views
+	if self.tableHeaderBox ~= nil then
+		self.tableHeaderBox:setVisible(not self.showFinances)
+	end
+	if self.financeHeaderBox ~= nil then
+		self.financeHeaderBox:setVisible(self.showFinances)
+	end
+	
+	self:buildDisplayRows()
+	self.overviewTable:reloadData()
+end
+
 function ProductionDlgFrame:onClickRecipes()
 	dbPrintf("ProductionDlgFrame:onClickRecipes()")
 	self.showRecipes = not self.showRecipes
 	self:updateRecipeButtonText()
 	
-	-- Update visibility of input/output toggle button
 	if self.toggleButton ~= nil then
 		self.toggleButton:setVisible(not self.showRecipes)
 	end
 	
-	-- Update header visibility
 	if self.fillTypeHeader ~= nil then
 		if self.showRecipes then
 			self.fillTypeHeader:setText(g_i18n:getText("ui_productionDlg_hbRecipes"))
 		else
-			self:updateToggleButtonText()  -- This updates the header back
+			self:updateToggleButtonText()
 		end
 	end
 	
+	self:buildDisplayRows()
 	self.overviewTable:reloadData()
 end
 
@@ -259,12 +349,13 @@ function ProductionDlgFrame:onClickToggle()
 	dbPrintf("ProductionDlgFrame:onClickToggle()")
 	self.showInputs = not self.showInputs
 	self:updateToggleButtonText()
+	self:buildDisplayRows()
 	self.overviewTable:reloadData()
 end
 
 function ProductionDlgFrame:getNumberOfItemsInSection(list, section)
     if list == self.overviewTable then
-        return #self.productions
+        return #self.displayRows
     else
         return 0
     end
@@ -272,77 +363,92 @@ end
 
 function ProductionDlgFrame:populateCellForItemInSection(list, section, index, cell)
     if list == self.overviewTable then
-		local prod = self.productions[index]
+		local row = self.displayRows[index]
 		
-		if prod == nil then
+		if row == nil then
 			return
 		end
 
-		-- Show production name
-		cell:getAttribute("productionName"):setText(prod.name)
-		cell:getAttribute("productionName"):setVisible(true)
+		local prod = row.production
+		local fillTypes = row.fillTypes
 
-		if self.showRecipes then
-			-- Show recipes view
-			for i = 1, 5 do
-				local fillIcon = cell:getAttribute("fillIcon" .. i)
-				local fillCapacity = cell:getAttribute("fillCapacity" .. i)
+		-- Finance view - ONLY PLACE WITH COLORS
+		if row.rowType == "finance" then
+			cell:getAttribute("productionName"):setText(prod.name)
+			cell:getAttribute("productionName"):setVisible(true)
+			
+			-- Display financial data in the fill type columns (just values, no labels)
+			local revenueText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyRevenue)))
+			local costsText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyCosts)))
+			local profitText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyIncome)))
+			
+			cell:getAttribute("fillIcon1"):setVisible(false)
+			cell:getAttribute("fillCapacity1"):setText(revenueText)
+			cell:getAttribute("fillCapacity1"):setTextColor(1, 1, 1, 1)  -- White for revenue
+			cell:getAttribute("fillCapacity1"):setVisible(true)
+			
+			cell:getAttribute("fillIcon2"):setVisible(false)
+			cell:getAttribute("fillCapacity2"):setText(costsText)
+			cell:getAttribute("fillCapacity2"):setTextColor(1, 0, 0, 1)  -- Red for costs
+			cell:getAttribute("fillCapacity2"):setVisible(true)
+			
+			cell:getAttribute("fillIcon3"):setVisible(false)
+			cell:getAttribute("fillCapacity3"):setText(profitText)
+			-- Set color based on profit/loss
+			if prod.monthlyIncome >= 0 then
+				cell:getAttribute("fillCapacity3"):setTextColor(0, 1, 0, 1)  -- Green for positive profit
+			else
+				cell:getAttribute("fillCapacity3"):setTextColor(1, 0, 0, 1)  -- Red for negative profit (loss)
+			end
+			cell:getAttribute("fillCapacity3"):setVisible(true)
+			
+			-- Hide remaining columns
+			for i = 4, 10 do
+				cell:getAttribute("fillIcon" .. i):setVisible(false)
+				cell:getAttribute("fillCapacity" .. i):setVisible(false)
+			end
+			
+			return
+		end
 
-				if i <= #prod.recipes then
-					local recipe = prod.recipes[i]
-					
-					-- Show recipe icon if available (use first output's icon)
-					if recipe.outputs and #recipe.outputs > 0 and recipe.outputs[1].hudOverlayFilename then
-						fillIcon:setImageFilename(recipe.outputs[1].hudOverlayFilename)
+		-- Show production name only on first row
+		if row.rowType == "row1" then
+			cell:getAttribute("productionName"):setText(prod.name)
+			cell:getAttribute("productionName"):setVisible(true)
+		else
+			cell:getAttribute("productionName"):setText("")
+			cell:getAttribute("productionName"):setVisible(false)
+		end
+
+		-- Display 5 items per row
+		for i = 1, 5 do
+			local fillIcon = cell:getAttribute("fillIcon" .. i)
+			local fillCapacity = cell:getAttribute("fillCapacity" .. i)
+			local dataIndex = row.startIndex + (i - 1)
+
+			if dataIndex <= #fillTypes then
+				local fillType = fillTypes[dataIndex]
+				
+				-- Reset text color to default white for non-finance views
+				fillCapacity:setTextColor(1, 1, 1, 1)
+				
+				if self.showRecipes then
+					-- Recipe display
+					if fillType.outputs and #fillType.outputs > 0 and fillType.outputs[1].hudOverlayFilename then
+						fillIcon:setImageFilename(fillType.outputs[1].hudOverlayFilename)
 						fillIcon:setVisible(true)
 					else
 						fillIcon:setVisible(false)
 					end
 					
-					-- Build recipe text
-					local statusText = recipe.isActive and "(Active)" or "(Inactive)"
-					local recipeText = string.format("%s %s", recipe.name, statusText)
-					
-					-- Add inputs
-					if #recipe.inputs > 0 then
-						recipeText = recipeText .. "\n"
-						for j, input in ipairs(recipe.inputs) do
-							if j > 1 then recipeText = recipeText .. ", " end
-							recipeText = recipeText .. string.format("%s", input.title)
-						end
-					end
-					
-					-- Add outputs
-					if #recipe.outputs > 0 then
-						recipeText = recipeText .. " → "
-						for j, output in ipairs(recipe.outputs) do
-							if j > 1 then recipeText = recipeText .. ", " end
-							recipeText = recipeText .. string.format("%s", output.title)
-						end
-					end
+					-- Just show recipe name and status (no inputs/outputs)
+					local statusText = fillType.isActive and "(Active)" or "(Inactive)"
+					local recipeText = string.format("%s %s", fillType.name, statusText)
 					
 					fillCapacity:setText(recipeText)
 					fillCapacity:setVisible(true)
 				else
-					-- Hide unused slots
-					fillIcon:setVisible(false)
-					fillCapacity:setVisible(false)
-				end
-			end
-		else
-			-- Show fill types view (original logic)
-			-- Choose which fill types to display based on toggle
-			local fillTypes = self.showInputs and prod.inputFillTypes or prod.outputFillTypes
-
-			-- Display fill types horizontally (up to 5 fill types)
-			for i = 1, 5 do
-				local fillIcon = cell:getAttribute("fillIcon" .. i)
-				local fillCapacity = cell:getAttribute("fillCapacity" .. i)
-
-				if i <= #fillTypes then
-					local fillType = fillTypes[i]
-					
-					-- Set fill type icon
+					-- Fill type display
 					if fillType.hudOverlayFilename ~= nil and fillType.hudOverlayFilename ~= "" then
 						fillIcon:setImageFilename(fillType.hudOverlayFilename)
 						fillIcon:setVisible(true)
@@ -350,15 +456,58 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 						fillIcon:setVisible(false)
 					end
 
-					-- Set capacity info (no fill type name, just data)
-					local capacityText = string.format("%s / %s L (%.1f%%)", 
+					local capacityText = string.format("%s / %s L", 
 						self:formatNumber(math.floor(fillType.liters)),
-						self:formatNumber(math.floor(fillType.capacity)),
-						fillType.fillPercent)
+						self:formatNumber(math.floor(fillType.capacity)))
 					fillCapacity:setText(capacityText)
 					fillCapacity:setVisible(true)
+				end
+			else
+				fillIcon:setVisible(false)
+				fillCapacity:setVisible(false)
+			end
+		end
+		
+		-- Handle bottom row items (6-10) for non-finance views
+		if not self.showFinances then
+			for i = 6, 10 do
+				local fillIcon = cell:getAttribute("fillIcon" .. i)
+				local fillCapacity = cell:getAttribute("fillCapacity" .. i)
+				local dataIndex = row.startIndex + (i - 1)
+
+				if dataIndex <= #fillTypes and row.rowType == "row2" then
+					local fillType = fillTypes[dataIndex]
+					
+					-- Reset text color to default white
+					fillCapacity:setTextColor(1, 1, 1, 1)
+					
+					if self.showRecipes then
+						if fillType.outputs and #fillType.outputs > 0 and fillType.outputs[1].hudOverlayFilename then
+							fillIcon:setImageFilename(fillType.outputs[1].hudOverlayFilename)
+							fillIcon:setVisible(true)
+						else
+							fillIcon:setVisible(false)
+						end
+						
+						local statusText = fillType.isActive and "(Active)" or "(Inactive)"
+						local recipeText = string.format("%s %s", fillType.name, statusText)
+						fillCapacity:setText(recipeText)
+						fillCapacity:setVisible(true)
+					else
+						if fillType.hudOverlayFilename ~= nil and fillType.hudOverlayFilename ~= "" then
+							fillIcon:setImageFilename(fillType.hudOverlayFilename)
+							fillIcon:setVisible(true)
+						else
+							fillIcon:setVisible(false)
+						end
+
+						local capacityText = string.format("%s / %s L", 
+							self:formatNumber(math.floor(fillType.liters)),
+							self:formatNumber(math.floor(fillType.capacity)))
+						fillCapacity:setText(capacityText)
+						fillCapacity:setVisible(true)
+					end
 				else
-					-- Hide unused fill type slots
 					fillIcon:setVisible(false)
 					fillCapacity:setVisible(false)
 				end
@@ -382,6 +531,7 @@ end
 function ProductionDlgFrame:onClose()
 	dbPrintf("ProductionDlgFrame:onClose()")
 	self.productions = {}
+	self.displayRows = {}
 	ProductionDlgFrame:superClass().onClose(self)
 end
 
