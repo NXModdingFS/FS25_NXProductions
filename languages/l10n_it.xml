@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributions>
+    </translationContributions>
+    <texts>
+        <text name="input_SHOW_PRODUCTION_DLG" text="Panoramica Produzione" />
+        <text name="ui_productionDlg_title" text="Panoramica Produzione" />
+        <text name="ui_productionDlg_btnClose" text="Chiudi" />
+        <text name="ui_productionDlg_btnShowOutputs" text="Mostra Uscite" />
+        <text name="ui_productionDlg_btnShowInputs" text="Mostra Ingressi" />
+        <text name="ui_productionDlg_btnShowRecipes" text="Mostra Ricette" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="Mostra Tipi di Riempimento" />
+        <text name="ui_productionDlg_btnShowFinances" text="Mostra Finanze" />
+        <text name="ui_productionDlg_btnHideFinances" text="Nascondi Finanze" />
+        <text name="ui_productionDlg_hbName" text="Nome" />
+        <text name="ui_productionDlg_hbInputs" text="Ingressi" />
+        <text name="ui_productionDlg_hbOutputs" text="Uscite" />
+        <text name="ui_productionDlg_hbFillType" text="Tipo di Riempimento" />
+        <text name="ui_productionDlg_hbCapacity" text="Capacità" />
+        <text name="ui_productionDlg_hbIncome" text="Reddito Mensile" />
+        <text name="ui_productionDlg_hbRecipes" text="Ricette" />
+        <text name="ui_productionDlg_hbFinances" text="Finanze" />
+        <text name="ui_productionDlg_hbRevenue" text="Entrate" />
+        <text name="ui_productionDlg_hbCosts" text="Costi" />
+        <text name="ui_productionDlg_hbProfit" text="Profitto Netto" />
+        <text name="ui_productionDlg_totalIncome" text="Reddito Totale/Mese:" />
+        <text name="ui_productionDlg_noProductions" text="Nessuna produzione trovata" />
+    </texts>
+</l10n>

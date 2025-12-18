@@ -33,6 +33,7 @@ Features:
 - Zeige detaillierte Finanzen pro Produktion]]></de>
     </description>
 	
+	<l10n filenamePrefix="languages/l10n"/>
 	<iconFilename>icon.dds</iconFilename>
 	<multiplayer supported="true" />
 	<extraSourceFiles>
@@ -49,6 +50,4 @@ Features:
       	</actionBinding>
   	</inputBinding>	
 	
-	<!-- Load translation files -->
-	<l10n filenamePrefix="translations/translation" />
 </modDesc>
