@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <!-- Input Action -->
+    <elements>
+        <e k="input_SHOW_PRODUCTION_DLG" v="Przegląd Produkcji" />
+    </elements>
+
+    <!-- Dialog Title & Buttons -->
+    <elements>
+        <e k="ui_productionDlg_title" v="Przegląd Produkcji" />
+        <e k="ui_productionDlg_btnClose" v="Zamknij" />
+        <e k="ui_productionDlg_btnShowOutputs" v="Pokaż Wyjścia" />
+        <e k="ui_productionDlg_btnShowInputs" v="Pokaż Wejścia" />
+        <e k="ui_productionDlg_btnShowRecipes" v="Pokaż Przepisy" />
+        <e k="ui_productionDlg_btnShowFillTypes" v="Pokaż Typy Wypełnienia" />
+        <e k="ui_productionDlg_btnShowFinances" v="Pokaż Finanse" />
+        <e k="ui_productionDlg_btnHideFinances" v="Ukryj Finanse" />
+    </elements>
+
+    <!-- Table Headers -->
+    <elements>
+        <e k="ui_productionDlg_hbName" v="Nazwa" />
+        <e k="ui_productionDlg_hbInputs" v="Wejścia" />
+        <e k="ui_productionDlg_hbOutputs" v="Wyjścia" />
+        <e k="ui_productionDlg_hbFillType" v="Typ Wypełnienia" />
+        <e k="ui_productionDlg_hbCapacity" v="Pojemność" />
+        <e k="ui_productionDlg_hbIncome" v="Miesięczny Dochód" />
+        <e k="ui_productionDlg_hbRecipes" v="Przepisy" />
+        <e k="ui_productionDlg_hbFinances" v="Finanse" />
+        <e k="ui_productionDlg_hbRevenue" v="Przychód" />
+        <e k="ui_productionDlg_hbCosts" v="Koszty" />
+        <e k="ui_productionDlg_hbProfit" v="Zysk Netto" />
+    </elements>
+
+    <!-- Messages -->
+    <elements>
+        <e k="ui_productionDlg_totalIncome" v="Całkowity Dochód/Miesiąc:" />
+        <e k="ui_productionDlg_noProductions" v="Nie znaleziono produkcji" />
+    </elements>
+</l10n>
