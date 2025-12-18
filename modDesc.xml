@@ -18,7 +18,8 @@ Features:
 - Total monthly income summary
 - Toggle between inputs and outputs view
 - View production recipes
-- View detailed finances per production]]></en>
+- View detailed finances per production
+- Auto-manage productions (activate when inputs available, deactivate when outputs full)]]></en>
         <de><![CDATA[Zeigt alle Produktionen mit Fülltypen, Kapazitäten und monatlichem Einkommen an.
 
 Drücke Shift + P um die Produktionsübersicht zu öffnen.
@@ -30,7 +31,8 @@ Features:
 - Gesamtmonatliche Einkommensübersicht
 - Umschalten zwischen Eingängen und Ausgängen
 - Zeige Rezepte
-- Zeige detaillierte Finanzen pro Produktion]]></de>
+- Zeige detaillierte Finanzen pro Produktion
+- Auto-Verwaltung von Produktionen (aktivieren wenn Eingänge verfügbar, deaktivieren wenn Ausgänge voll)]]></de>
     </description>
 	
 	<l10n filenamePrefix="languages/l10n"/>
@@ -39,6 +41,8 @@ Features:
 	<extraSourceFiles>
 		<sourceFile filename="ProductionOverview.lua" />
 		<sourceFile filename="RegisterPlayerActionEvents.lua" />
+		<sourceFile filename="ProductionSettings.lua" />
+		<sourceFile filename="ProductionAutoManager.lua" />
 	</extraSourceFiles>
 
     <actions>
