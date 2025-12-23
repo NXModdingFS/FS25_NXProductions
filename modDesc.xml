@@ -36,7 +36,7 @@ Features:
     </description>
 	
 	<l10n filenamePrefix="languages/l10n"/>
-	<iconFilename>icon.dds</iconFilename>
+	<iconFilename>icon_NXProductionsOverview.dds</iconFilename>
 	<multiplayer supported="true" />
 	<extraSourceFiles>
 		<sourceFile filename="ProductionOverview.lua" />
