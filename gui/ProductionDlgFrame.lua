@@ -436,11 +436,11 @@ function ProductionDlgFrame:onClickExportCSV()
 		env.currentDay or 1
 	)
 	
-	-- Get mods directory and create NXDataExports folder
-	local modsDir = getUserProfileAppPath() .. "mods"
-	local exportDir = modsDir .. "/NXDataExports"
+	-- Get modSettings directory and create FS25_NXProductionsDump folder
+	local modsDir = getUserProfileAppPath() .. "modSettings"
+	local exportDir = modsDir .. "/FS25_NXProductionsDump"
 	
-	-- Create the NXDataExports directory if it doesn't exist
+	-- Create the FS25_NXProductionsDump directory if it doesn't exist
 	createFolder(exportDir)
 	
 	local filepath = exportDir .. "/" .. filename
@@ -503,7 +503,7 @@ function ProductionDlgFrame:onClickExportCSV()
 	-- Show success dialog with folder location
 	g_gui:showInfoDialog({
 		dialogType = DialogElement.TYPE_INFO,
-		text = string.format(g_i18n:getText("ui_productionDlg_exportSuccess") .. "\nLocation: mods/NXDataExports/", filename)
+		text = string.format(g_i18n:getText("ui_productionDlg_exportSuccess") .. "\nLocation: modSettings/FS25_NXProductionsDump/", filename)
 	})
 	
 	dbPrintf("CSV exported successfully to: %s", filepath)
