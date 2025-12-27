@@ -1,17 +1,7 @@
-local isDbPrintfOn = false
-local DEBUG_COSTS = true  -- Set to true to see cost calculations
-
-local function dbPrintf(...)
-	if isDbPrintfOn then
-    	print(string.format(...))
-	end
-end
-
 ProductionDlgFrame = {}
 local DlgFrame_mt = Class(ProductionDlgFrame, MessageDialog)
 
 function ProductionDlgFrame.new(target, custom_mt)
-	dbPrintf("ProductionDlgFrame:new()")
 	local self = MessageDialog.new(target, custom_mt or DlgFrame_mt)
     self.productions = {}
 	self.displayRows = {}  -- Flattened list for display
@@ -22,19 +12,16 @@ function ProductionDlgFrame.new(target, custom_mt)
 end
 
 function ProductionDlgFrame:onGuiSetupFinished()
-	dbPrintf("ProductionDlgFrame:onGuiSetupFinished()")
 	ProductionDlgFrame:superClass().onGuiSetupFinished(self)
 	self.overviewTable:setDataSource(self)
 	self.overviewTable:setDelegate(self)
 end
 
 function ProductionDlgFrame:onCreate()
-	dbPrintf("ProductionDlgFrame:onCreate()")
 	ProductionDlgFrame:superClass().onCreate(self)
 end
 
 function ProductionDlgFrame:onOpen()
-	dbPrintf("ProductionDlgFrame:onOpen()")
 	ProductionDlgFrame:superClass().onOpen(self)
 
 	self:updateToggleButtonText()
@@ -192,33 +179,14 @@ function ProductionDlgFrame:loadProductionData()
 				
 				-- Calculate monthly costs
 				
-				if DEBUG_COSTS then
-					print(string.format("=== Cost Debug for %s ===", prodData.name))
-					print(string.format("Days per month: %d", daysPerMonth))
-				end
-				
-				-- 1. Daily upkeep cost (fixed cost for owning the building) - UPDATED TO USE getDailyUpkeep()
+				-- 1. Daily upkeep cost (fixed cost for owning the building)
 				if productionPoint.owningPlaceable ~= nil then
-					-- Use the same method as the Placeable Overview mod
 					local dailyUpkeepValue = productionPoint.owningPlaceable:getDailyUpkeep()
 					
 					if dailyUpkeepValue ~= nil and dailyUpkeepValue > 0 then
 						prodData.dailyUpkeep = dailyUpkeepValue
 						local monthlyUpkeep = dailyUpkeepValue * daysPerMonth
 						prodData.monthlyCosts = prodData.monthlyCosts + monthlyUpkeep
-						
-						if DEBUG_COSTS then
-							print(string.format("  Daily upkeep (getDailyUpkeep): $%.2f/day", dailyUpkeepValue))
-							print(string.format("  Monthly upkeep: $%.2f", monthlyUpkeep))
-						end
-					else
-						if DEBUG_COSTS then
-							print("  No daily upkeep found (getDailyUpkeep returned nil or 0)")
-						end
-					end
-				else
-					if DEBUG_COSTS then
-						print("  owningPlaceable = nil")
 					end
 				end
 				
@@ -237,31 +205,18 @@ function ProductionDlgFrame:loadProductionData()
 				if hasRunningProduction and productionPoint.costsPerActiveHour ~= nil then
 					local baseCost = productionPoint.costsPerActiveHour * 24 * daysPerMonth
 					prodData.monthlyCosts = prodData.monthlyCosts + baseCost
-					if DEBUG_COSTS then
-						print(string.format("  Base facility cost/hour: $%.2f", productionPoint.costsPerActiveHour))
-						print(string.format("  Base monthly operational cost: $%.2f", baseCost))
-					end
 				end
 				
-				-- 3. Add recipe-specific costs for each active production (DO NOT CHANGE)
+				-- 3. Add recipe-specific costs for each active production
 				if productionPoint.productions ~= nil then
 					for _, production in pairs(productionPoint.productions) do
 						if production.status == ProductionPoint.PROD_STATUS.RUNNING then
 							if production.costsPerActiveHour ~= nil then
 								local recipeCost = production.costsPerActiveHour * 24 * daysPerMonth
 								prodData.monthlyCosts = prodData.monthlyCosts + recipeCost
-								if DEBUG_COSTS then
-									print(string.format("  Recipe '%s' cost/hour: $%.2f", production.name or "Unknown", production.costsPerActiveHour))
-									print(string.format("  Recipe monthly cost: $%.2f", recipeCost))
-								end
 							end
 						end
 					end
-				end
-				
-				if DEBUG_COSTS then
-					print(string.format("  TOTAL Monthly Costs: $%.2f", prodData.monthlyCosts))
-					print("======================")
 				end
 				
 				prodData.monthlyIncome = prodData.monthlyRevenue - prodData.monthlyCosts
@@ -354,7 +309,6 @@ function ProductionDlgFrame:updateRecipeButtonText()
 end
 
 function ProductionDlgFrame:onClickFinances()
-	dbPrintf("ProductionDlgFrame:onClickFinances()")
 	self.showFinances = not self.showFinances
 	
 	-- Update finances button text
@@ -387,7 +341,6 @@ function ProductionDlgFrame:onClickFinances()
 end
 
 function ProductionDlgFrame:onClickRecipes()
-	dbPrintf("ProductionDlgFrame:onClickRecipes()")
 	self.showRecipes = not self.showRecipes
 	self:updateRecipeButtonText()
 	
@@ -408,7 +361,6 @@ function ProductionDlgFrame:onClickRecipes()
 end
 
 function ProductionDlgFrame:onClickToggle()
-	dbPrintf("ProductionDlgFrame:onClickToggle()")
 	self.showInputs = not self.showInputs
 	self:updateToggleButtonText()
 	self:buildDisplayRows()
@@ -416,8 +368,6 @@ function ProductionDlgFrame:onClickToggle()
 end
 
 function ProductionDlgFrame:onClickExportCSV()
-	dbPrintf("ProductionDlgFrame:onClickExportCSV()")
-	
 	-- Check if there's data to export
 	if #self.productions == 0 then
 		g_gui:showInfoDialog({
@@ -453,7 +403,6 @@ function ProductionDlgFrame:onClickExportCSV()
 			dialogType = DialogElement.TYPE_ERROR,
 			text = g_i18n:getText("ui_productionDlg_exportError")
 		})
-		print("ProductionDlgFrame: Failed to open CSV file: " .. filepath)
 		return
 	end
 	
@@ -505,8 +454,6 @@ function ProductionDlgFrame:onClickExportCSV()
 		dialogType = DialogElement.TYPE_INFO,
 		text = string.format(g_i18n:getText("ui_productionDlg_exportSuccess") .. "\nLocation: modSettings/FS25_NXProductionsDump/", filename)
 	})
-	
-	dbPrintf("CSV exported successfully to: %s", filepath)
 end
 
 function ProductionDlgFrame:getNumberOfItemsInSection(list, section)
@@ -685,13 +632,11 @@ function ProductionDlgFrame:formatNumber(num)
 end
 
 function ProductionDlgFrame:onClose()
-	dbPrintf("ProductionDlgFrame:onClose()")
 	self.productions = {}
 	self.displayRows = {}
 	ProductionDlgFrame:superClass().onClose(self)
 end
 
 function ProductionDlgFrame:onClickBack(sender)
-	dbPrintf("ProductionDlgFrame:onClickBack()")
 	self:close()
 end

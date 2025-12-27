@@ -2,9 +2,6 @@ ProductionSettings = {}
 ProductionSettings.SETTINGS = {}
 ProductionSettings.CONTROLS = {}
 
-local DEBUG = false
-local function dprint(...) if DEBUG then print("[ProductionSettings]", ...) end end
-
 -- Network Event for Settings Synchronization
 ProductionSettingsEvent = {}
 ProductionSettingsEvent_mt = Class(ProductionSettingsEvent, Event)
@@ -38,8 +35,6 @@ function ProductionSettingsEvent:run(connection)
             return
         end
         
-        dprint("Settings received from server - Auto-manage: " .. tostring(self.autoManageEnabled))
-        
         ProductionSettings.autoManageEnabled = self.autoManageEnabled
         
         -- Update UI if menu is open
@@ -54,8 +49,6 @@ function ProductionSettingsEvent:run(connection)
         end
     else
         -- Server receives settings from client
-        dprint("Server: New settings received - Auto-manage: " .. tostring(self.autoManageEnabled))
-        
         ProductionSettings.autoManageEnabled = self.autoManageEnabled
         
         -- Broadcast to all other clients
@@ -80,7 +73,6 @@ ProductionSettings.autoManageEnabled = false
 function ProductionSettings.sendSettingsToClients()
     if g_server ~= nil then
         g_server:broadcastEvent(ProductionSettingsEvent.new(ProductionSettings.autoManageEnabled))
-        dprint("Settings sent to all clients")
     end
 end
 
@@ -88,14 +80,12 @@ end
 function ProductionSettings.sendSettingsToServer()
     if g_client ~= nil and not g_currentMission:getIsServer() then
         g_client:getServerConnection():sendEvent(ProductionSettingsEvent.new(ProductionSettings.autoManageEnabled))
-        dprint("Settings sent to server")
     end
 end
 
 -- Set a value
 function ProductionSettings.setValue(id, value)
     ProductionSettings[id] = value
-    dprint("Auto-manage " .. (value and "enabled" or "disabled"))
 end
 
 -- Get a value
@@ -157,7 +147,6 @@ function ProductionSettings.loadSettings()
     local autoManageEnabled = getXMLBool(xmlFile, "production.settings#autoManageEnabled")
     if autoManageEnabled ~= nil then
         ProductionSettings.setValue("autoManageEnabled", autoManageEnabled)
-        dprint("Auto-manage loaded: " .. (autoManageEnabled and "enabled" or "disabled"))
     end
     
     delete(xmlFile)
@@ -185,8 +174,6 @@ function ProductionSettings.saveSettings()
     
     saveXMLFile(xmlFile)
     delete(xmlFile)
-
-    dprint("Settings saved - Auto-manage: " .. (ProductionSettings.autoManageEnabled and "enabled" or "disabled"))
 end
 
 -- Helper function for FocusManager

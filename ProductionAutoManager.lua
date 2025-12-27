@@ -1,14 +1,10 @@
 ProductionAutoManager = {}
 
-local DEBUG = false
-local function dprint(...) if DEBUG then print("[ProductionAutoManager]", ...) end end
-
 -- Check interval in milliseconds (check every 5 seconds)
 ProductionAutoManager.CHECK_INTERVAL = 5000
 ProductionAutoManager.lastCheckTime = 0
 
 function ProductionAutoManager:loadMap(name)
-    dprint("ProductionAutoManager initialized")
 end
 
 function ProductionAutoManager:update(dt)
@@ -56,16 +52,10 @@ function ProductionAutoManager:manageProduction(productionPoint)
             
             if shouldActivate and not isRunning then
                 -- Activate production
-                dprint(string.format("Activating production '%s' at '%s'", 
-                    production.name or "Unknown", 
-                    productionPoint:getName()))
                 productionPoint:setProductionState(production.id, ProductionPoint.PROD_STATUS.RUNNING)
                 
             elseif not shouldActivate and isRunning then
                 -- Deactivate production
-                dprint(string.format("Deactivating production '%s' at '%s'", 
-                    production.name or "Unknown", 
-                    productionPoint:getName()))
                 productionPoint:setProductionState(production.id, ProductionPoint.PROD_STATUS.MISSING_INPUTS)
             end
         end
@@ -86,9 +76,6 @@ function ProductionAutoManager:shouldActivateProduction(productionPoint, product
                 
                 -- If any output is at or above 95% capacity, deactivate
                 if fillPercent >= 95 then
-                    dprint(string.format("Output '%s' is full (%.1f%%), deactivating", 
-                        g_fillTypeManager:getFillTypeNameByIndex(output.type), 
-                        fillPercent))
                     return false
                 end
             end
@@ -102,10 +89,6 @@ function ProductionAutoManager:shouldActivateProduction(productionPoint, product
             
             -- If any input is below the required amount, don't activate
             if fillLevel < input.amount then
-                dprint(string.format("Input '%s' insufficient (%.1f / %.1f), not activating", 
-                    g_fillTypeManager:getFillTypeNameByIndex(input.type), 
-                    fillLevel, 
-                    input.amount))
                 return false
             end
         end
@@ -116,7 +99,6 @@ function ProductionAutoManager:shouldActivateProduction(productionPoint, product
 end
 
 function ProductionAutoManager:deleteMap()
-    dprint("ProductionAutoManager cleaned up")
 end
 
 addModEventListener(ProductionAutoManager)
