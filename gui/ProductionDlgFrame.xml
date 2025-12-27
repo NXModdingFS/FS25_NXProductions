@@ -86,6 +86,9 @@
             <!-- Finances Button -->
             <Button profile="buttonOK" text="$l10n_ui_productionDlg_btnShowFinances" onClick="onClickFinances" id="financesButton" />
             
+            <!-- Export CSV Button (Gilgamoth's happy stats button)--> 
+            <Button profile="buttonOK" text="$l10n_ui_productionDlg_btnExportCSV" onClick="onClickExportCSV" id="exportButton" />
+            
             <Button profile="buttonBack" text="$l10n_ui_productionDlg_btnClose" onClick="onClickBack" />
         </BoxLayout>
     </GuiElement>

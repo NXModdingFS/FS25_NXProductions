@@ -1,4 +1,5 @@
 local isDbPrintfOn = false
+local DEBUG_COSTS = true  -- Set to true to see cost calculations
 
 local function dbPrintf(...)
 	if isDbPrintfOn then
@@ -59,6 +60,7 @@ function ProductionDlgFrame:loadProductionData()
 					monthlyIncome = 0,
 					monthlyCosts = 0,
 					monthlyRevenue = 0,
+					dailyUpkeep = 0,
 					productionPoint = productionPoint
 				}
 
@@ -188,18 +190,78 @@ function ProductionDlgFrame:loadProductionData()
 					end
 				end
 				
-				-- Calculate costs from active recipes
+				-- Calculate monthly costs
+				
+				if DEBUG_COSTS then
+					print(string.format("=== Cost Debug for %s ===", prodData.name))
+					print(string.format("Days per month: %d", daysPerMonth))
+				end
+				
+				-- 1. Daily upkeep cost (fixed cost for owning the building) - UPDATED TO USE getDailyUpkeep()
+				if productionPoint.owningPlaceable ~= nil then
+					-- Use the same method as the Placeable Overview mod
+					local dailyUpkeepValue = productionPoint.owningPlaceable:getDailyUpkeep()
+					
+					if dailyUpkeepValue ~= nil and dailyUpkeepValue > 0 then
+						prodData.dailyUpkeep = dailyUpkeepValue
+						local monthlyUpkeep = dailyUpkeepValue * daysPerMonth
+						prodData.monthlyCosts = prodData.monthlyCosts + monthlyUpkeep
+						
+						if DEBUG_COSTS then
+							print(string.format("  Daily upkeep (getDailyUpkeep): $%.2f/day", dailyUpkeepValue))
+							print(string.format("  Monthly upkeep: $%.2f", monthlyUpkeep))
+						end
+					else
+						if DEBUG_COSTS then
+							print("  No daily upkeep found (getDailyUpkeep returned nil or 0)")
+						end
+					end
+				else
+					if DEBUG_COSTS then
+						print("  owningPlaceable = nil")
+					end
+				end
+				
+				-- 2. Base facility maintenance costs (if production point has any running recipes)
+				local hasRunningProduction = false
 				if productionPoint.productions ~= nil then
 					for _, production in pairs(productionPoint.productions) do
 						if production.status == ProductionPoint.PROD_STATUS.RUNNING then
-							-- Calculate costs per cycle
-							local cyclesCostPerHour = 0
-							if production.costsPerActiveHour ~= nil then
-								cyclesCostPerHour = production.costsPerActiveHour
-							end
-							prodData.monthlyCosts = prodData.monthlyCosts + (cyclesCostPerHour * 24 * daysPerMonth)
+							hasRunningProduction = true
+							break
 						end
 					end
+				end
+				
+				-- Add production point base costs only if something is running
+				if hasRunningProduction and productionPoint.costsPerActiveHour ~= nil then
+					local baseCost = productionPoint.costsPerActiveHour * 24 * daysPerMonth
+					prodData.monthlyCosts = prodData.monthlyCosts + baseCost
+					if DEBUG_COSTS then
+						print(string.format("  Base facility cost/hour: $%.2f", productionPoint.costsPerActiveHour))
+						print(string.format("  Base monthly operational cost: $%.2f", baseCost))
+					end
+				end
+				
+				-- 3. Add recipe-specific costs for each active production (DO NOT CHANGE)
+				if productionPoint.productions ~= nil then
+					for _, production in pairs(productionPoint.productions) do
+						if production.status == ProductionPoint.PROD_STATUS.RUNNING then
+							if production.costsPerActiveHour ~= nil then
+								local recipeCost = production.costsPerActiveHour * 24 * daysPerMonth
+								prodData.monthlyCosts = prodData.monthlyCosts + recipeCost
+								if DEBUG_COSTS then
+									print(string.format("  Recipe '%s' cost/hour: $%.2f", production.name or "Unknown", production.costsPerActiveHour))
+									print(string.format("  Recipe monthly cost: $%.2f", recipeCost))
+								end
+							end
+						end
+					end
+				end
+				
+				if DEBUG_COSTS then
+					print(string.format("  TOTAL Monthly Costs: $%.2f", prodData.monthlyCosts))
+					print("======================")
 				end
 				
 				prodData.monthlyIncome = prodData.monthlyRevenue - prodData.monthlyCosts
@@ -353,12 +415,106 @@ function ProductionDlgFrame:onClickToggle()
 	self.overviewTable:reloadData()
 end
 
+function ProductionDlgFrame:onClickExportCSV()
+	dbPrintf("ProductionDlgFrame:onClickExportCSV()")
+	
+	-- Check if there's data to export
+	if #self.productions == 0 then
+		g_gui:showInfoDialog({
+			dialogType = DialogElement.TYPE_INFO,
+			text = "No production data to export"
+		})
+		return
+	end
+	
+	-- Generate filename with game date
+	local env = g_currentMission.environment
+	local filename = string.format(
+		"ProductionExport_Y%d_M%d_D%d.csv",
+		env.currentYear or 1,
+		env.currentPeriod or 1,
+		env.currentDay or 1
+	)
+	
+	-- Get mods directory and create NXDataExports folder
+	local modsDir = getUserProfileAppPath() .. "mods"
+	local exportDir = modsDir .. "/NXDataExports"
+	
+	-- Create the NXDataExports directory if it doesn't exist
+	createFolder(exportDir)
+	
+	local filepath = exportDir .. "/" .. filename
+	
+	-- Open file for writing
+	local file = io.open(filepath, "w")
+	if file == nil then
+		-- Show error dialog
+		g_gui:showInfoDialog({
+			dialogType = DialogElement.TYPE_ERROR,
+			text = g_i18n:getText("ui_productionDlg_exportError")
+		})
+		print("ProductionDlgFrame: Failed to open CSV file: " .. filepath)
+		return
+	end
+	
+	-- Write CSV Header
+	file:write('"Production Name","Type","Fill Type","Amount (L)","Capacity (L)","Fill %","Daily Upkeep ($)","Monthly Revenue ($)","Monthly Costs ($)","Net Profit ($)"\n')
+	
+	-- Export data for each production
+	for _, prod in ipairs(self.productions) do
+		-- Export input fill types
+		for _, fillType in ipairs(prod.inputFillTypes) do
+			file:write(string.format('"%s","Input","%s","%d","%d","%.2f","","","",""\n',
+				prod.name or "",
+				fillType.title or "",
+				math.floor(fillType.liters),
+				math.floor(fillType.capacity),
+				fillType.fillPercent
+			))
+		end
+		
+		-- Export output fill types
+		for _, fillType in ipairs(prod.outputFillTypes) do
+			file:write(string.format('"%s","Output","%s","%d","%d","%.2f","","","",""\n',
+				prod.name or "",
+				fillType.title or "",
+				math.floor(fillType.liters),
+				math.floor(fillType.capacity),
+				fillType.fillPercent
+			))
+		end
+		
+		-- Export financial summary for this production
+		file:write(string.format('"%s","Finance Summary","","","","","%.2f","%d","%d","%d"\n',
+			prod.name or "",
+			prod.dailyUpkeep,
+			math.floor(prod.monthlyRevenue),
+			math.floor(prod.monthlyCosts),
+			math.floor(prod.monthlyIncome)
+		))
+		
+		-- Add blank line between productions
+		file:write("\n")
+	end
+	
+	-- Close the file
+	file:close()
+	
+	-- Show success dialog with folder location
+	g_gui:showInfoDialog({
+		dialogType = DialogElement.TYPE_INFO,
+		text = string.format(g_i18n:getText("ui_productionDlg_exportSuccess") .. "\nLocation: mods/NXDataExports/", filename)
+	})
+	
+	dbPrintf("CSV exported successfully to: %s", filepath)
+end
+
 function ProductionDlgFrame:getNumberOfItemsInSection(list, section)
-    if list == self.overviewTable then
-        return #self.displayRows
-    else
-        return 0
-    end
+	if list == self.overviewTable then
+		return #self.displayRows
+	else
+		return 0
+	end
 end
 
 function ProductionDlgFrame:populateCellForItemInSection(list, section, index, cell)

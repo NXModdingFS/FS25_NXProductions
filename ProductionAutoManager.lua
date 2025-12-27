@@ -50,29 +50,25 @@ function ProductionAutoManager:manageProduction(productionPoint)
     
     for _, production in pairs(productionPoint.productions) do
         -- Skip inactive productions (not configured)
-        if production.status == ProductionPoint.PROD_STATUS.INACTIVE then
-            goto continue
-        end
-        
-        local shouldActivate = self:shouldActivateProduction(productionPoint, production)
-        local isRunning = production.status == ProductionPoint.PROD_STATUS.RUNNING
-        
-        if shouldActivate and not isRunning then
-            -- Activate production
-            dprint(string.format("Activating production '%s' at '%s'", 
-                production.name or "Unknown", 
-                productionPoint:getName()))
-            productionPoint:setProductionState(production.id, ProductionPoint.PROD_STATUS.RUNNING)
+        if production.status ~= ProductionPoint.PROD_STATUS.INACTIVE then
+            local shouldActivate = self:shouldActivateProduction(productionPoint, production)
+            local isRunning = production.status == ProductionPoint.PROD_STATUS.RUNNING
             
-        elseif not shouldActivate and isRunning then
-            -- Deactivate production
-            dprint(string.format("Deactivating production '%s' at '%s'", 
-                production.name or "Unknown", 
-                productionPoint:getName()))
-            productionPoint:setProductionState(production.id, ProductionPoint.PROD_STATUS.MISSING_INPUTS)
+            if shouldActivate and not isRunning then
+                -- Activate production
+                dprint(string.format("Activating production '%s' at '%s'", 
+                    production.name or "Unknown", 
+                    productionPoint:getName()))
+                productionPoint:setProductionState(production.id, ProductionPoint.PROD_STATUS.RUNNING)
+                
+            elseif not shouldActivate and isRunning then
+                -- Deactivate production
+                dprint(string.format("Deactivating production '%s' at '%s'", 
+                    production.name or "Unknown", 
+                    productionPoint:getName()))
+                productionPoint:setProductionState(production.id, ProductionPoint.PROD_STATUS.MISSING_INPUTS)
+            end
         end
-        
-        ::continue::
     end
 end
 

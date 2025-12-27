@@ -12,6 +12,7 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="Show Fill Types" />
         <text name="ui_productionDlg_btnShowFinances" text="Show Finances" />
         <text name="ui_productionDlg_btnHideFinances" text="Hide Finances" />
+        <text name="ui_productionDlg_btnExportCSV" text="Export CSV" />
         <text name="ui_productionDlg_hbName" text="Name" />
         <text name="ui_productionDlg_hbInputs" text="Inputs" />
         <text name="ui_productionDlg_hbOutputs" text="Outputs" />
@@ -25,6 +26,10 @@
         <text name="ui_productionDlg_hbProfit" text="Net Profit" />
         <text name="ui_productionDlg_totalIncome" text="Total Income/Month:" />
         <text name="ui_productionDlg_noProductions" text="No productions found" />
+        
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="Production data exported successfully to: %s" />
+        <text name="ui_productionDlg_exportError" text="Failed to export CSV file. Please check file permissions." />
         
         <!-- Production Settings -->
         <text name="production_menu_section_title" text="NX Productions" />
