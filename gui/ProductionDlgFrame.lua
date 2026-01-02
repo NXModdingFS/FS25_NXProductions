@@ -39,201 +39,162 @@ function ProductionDlgFrame:loadProductionData()
 	if g_currentMission ~= nil and g_currentMission.productionChainManager ~= nil then
 		for _, productionPoint in pairs(g_currentMission.productionChainManager.productionPoints) do
 			if productionPoint.ownerFarmId == g_currentMission:getFarmId() then
-				local prodData = {
-					name = productionPoint:getName(),
-					inputFillTypes = {},
-					outputFillTypes = {},
-					recipes = {},
-					monthlyIncome = 0,
-					monthlyCosts = 0,
-					monthlyRevenue = 0,
-					dailyUpkeep = 0,
-					productionPoint = productionPoint
-				}
 
-				if productionPoint.storage ~= nil then
-					local inputFillTypeIndices = {}
-					local outputFillTypeIndices = {}
-					
+				-- Lua 5.1 safe replacement for goto/continue
+				local hasActiveProduction = true
+				if ProductionSettings and ProductionSettings.hideInactiveProductions then
+					hasActiveProduction = false
 					if productionPoint.productions ~= nil then
 						for _, production in pairs(productionPoint.productions) do
-							if production.inputs ~= nil then
-								for _, input in pairs(production.inputs) do
-									inputFillTypeIndices[input.type] = true
-								end
-							end
-							if production.outputs ~= nil then
-								for _, output in pairs(production.outputs) do
-									outputFillTypeIndices[output.type] = true
-								end
-							end
-						end
-					end
-					
-					for fillTypeIndex, _ in pairs(productionPoint.storage.fillTypes) do
-						local fillLevel = productionPoint.storage:getFillLevel(fillTypeIndex)
-						local capacity = productionPoint.storage:getCapacity(fillTypeIndex)
-						
-						if capacity > 0 then
-							local fillTypeName = g_fillTypeManager:getFillTypeNameByIndex(fillTypeIndex)
-							local fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex)
-							
-							local fillTypeData = {
-								name = fillTypeName,
-								title = fillType.title,
-								liters = fillLevel,
-								capacity = capacity,
-								fillPercent = (fillLevel / capacity) * 100,
-								hudOverlayFilename = fillType.hudOverlayFilename
-							}
-
-							local isInput = inputFillTypeIndices[fillTypeIndex] == true
-							local isOutput = outputFillTypeIndices[fillTypeIndex] == true
-
-							if isInput then
-								table.insert(prodData.inputFillTypes, fillTypeData)
-							end
-							if isOutput then
-								table.insert(prodData.outputFillTypes, fillTypeData)
-							end
-							
-							if not isInput and not isOutput then
-								table.insert(prodData.outputFillTypes, fillTypeData)
+							if production.status ~= ProductionPoint.PROD_STATUS.INACTIVE then
+								hasActiveProduction = true
+								break
 							end
 						end
 					end
 				end
 
-				table.sort(prodData.inputFillTypes, function(a, b)
-					return a.title < b.title
-				end)
-				table.sort(prodData.outputFillTypes, function(a, b)
-					return a.title < b.title
-				end)
+				if hasActiveProduction then
+					-- Determine if production is Parallel or Sequential
+					local modeIndicator = ""
+					if productionPoint.parallelProduction ~= nil then
+						modeIndicator = productionPoint.parallelProduction and " (P)" or " (S)"
+					end
+					
+					local prodData = {
+						name = productionPoint:getName() .. modeIndicator,
+						inputFillTypes = {},
+						outputFillTypes = {},
+						recipes = {},
+						monthlyIncome = 0,
+						monthlyCosts = 0,
+						monthlyRevenue = 0,
+						dailyUpkeep = 0,
+						productionPoint = productionPoint
+					}
 
-				if productionPoint.productions ~= nil then
-					for _, production in pairs(productionPoint.productions) do
-						if production.status ~= nil and production.status ~= ProductionPoint.PROD_STATUS.INACTIVE then
-							local recipeName = production.name or "Unknown Recipe"
-							local isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING
-							
-							local inputs = {}
-							if production.inputs ~= nil then
-								for _, input in pairs(production.inputs) do
-									local fillType = g_fillTypeManager:getFillTypeByIndex(input.type)
-									if fillType then
-										table.insert(inputs, {
-											title = fillType.title,
-											amount = input.amount or 0,
-											hudOverlayFilename = fillType.hudOverlayFilename
-										})
+					-- ========================
+					-- Fill types
+					-- ========================
+					if productionPoint.storage ~= nil and productionPoint.storage.fillTypes ~= nil then
+						local inputFillTypeIndices = {}
+						local outputFillTypeIndices = {}
+
+						if productionPoint.productions ~= nil then
+							for _, production in pairs(productionPoint.productions) do
+								if production.inputs ~= nil then
+									for _, input in pairs(production.inputs) do
+										inputFillTypeIndices[input.type] = true
+									end
+								end
+								if production.outputs ~= nil then
+									for _, output in pairs(production.outputs) do
+										outputFillTypeIndices[output.type] = true
 									end
 								end
 							end
-							
-							local outputs = {}
-							if production.outputs ~= nil then
-								for _, output in pairs(production.outputs) do
-									local fillType = g_fillTypeManager:getFillTypeByIndex(output.type)
-									if fillType then
-										table.insert(outputs, {
-											title = fillType.title,
-											amount = output.amount or 0,
-											hudOverlayFilename = fillType.hudOverlayFilename
-										})
+						end
+
+						for fillTypeIndex, _ in pairs(productionPoint.storage.fillTypes) do
+							local fillLevel = productionPoint.storage:getFillLevel(fillTypeIndex)
+							local capacity = productionPoint.storage:getCapacity(fillTypeIndex)
+
+							if capacity > 0 then
+								local fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex)
+								if fillType ~= nil then
+									local data = {
+										name = fillType.name,
+										title = fillType.title,
+										liters = fillLevel,
+										capacity = capacity,
+										fillPercent = (fillLevel / capacity) * 100,
+										hudOverlayFilename = fillType.hudOverlayFilename
+									}
+
+									if inputFillTypeIndices[fillTypeIndex] then
+										table.insert(prodData.inputFillTypes, data)
+									else
+										table.insert(prodData.outputFillTypes, data)
 									end
 								end
 							end
-							
-							table.insert(prodData.recipes, {
-								name = recipeName,
-								isActive = isActive,
-								inputs = inputs,
-								outputs = outputs
-							})
 						end
 					end
-				end
 
-				-- Calculate financial data
-				prodData.monthlyRevenue = 0
-				prodData.monthlyCosts = 0
-				
-				-- Get days per month from game settings
-				local daysPerMonth = 1
-				if g_currentMission ~= nil and g_currentMission.missionInfo ~= nil and g_currentMission.missionInfo.timeScale ~= nil then
-					daysPerMonth = g_currentMission.missionInfo.timeScale
-				end
-				
-				-- Calculate revenue from outputs based on their sell prices
-				for _, fillType in pairs(prodData.outputFillTypes) do
-					local fillTypeIndex = g_fillTypeManager:getFillTypeIndexByName(fillType.name)
-					if fillTypeIndex ~= nil then
-						local pricePerLiter = g_currentMission.economyManager:getPricePerLiter(fillTypeIndex)
-						if pricePerLiter ~= nil then
-							-- Calculate potential revenue if all outputs were sold
-							prodData.monthlyRevenue = prodData.monthlyRevenue + (fillType.liters * pricePerLiter)
-						end
-					end
-				end
-				
-				-- Calculate monthly costs
-				
-				-- 1. Daily upkeep cost (fixed cost for owning the building)
-				if productionPoint.owningPlaceable ~= nil then
-					local dailyUpkeepValue = productionPoint.owningPlaceable:getDailyUpkeep()
-					
-					if dailyUpkeepValue ~= nil and dailyUpkeepValue > 0 then
-						prodData.dailyUpkeep = dailyUpkeepValue
-						local monthlyUpkeep = dailyUpkeepValue * daysPerMonth
-						prodData.monthlyCosts = prodData.monthlyCosts + monthlyUpkeep
-					end
-				end
-				
-				-- 2. Base facility maintenance costs (if production point has any running recipes)
-				local hasRunningProduction = false
-				if productionPoint.productions ~= nil then
-					for _, production in pairs(productionPoint.productions) do
-						if production.status == ProductionPoint.PROD_STATUS.RUNNING then
-							hasRunningProduction = true
-							break
-						end
-					end
-				end
-				
-				-- Add production point base costs only if something is running
-				if hasRunningProduction and productionPoint.costsPerActiveHour ~= nil then
-					local baseCost = productionPoint.costsPerActiveHour * 24 * daysPerMonth
-					prodData.monthlyCosts = prodData.monthlyCosts + baseCost
-				end
-				
-				-- 3. Add recipe-specific costs for each active production
-				if productionPoint.productions ~= nil then
-					for _, production in pairs(productionPoint.productions) do
-						if production.status == ProductionPoint.PROD_STATUS.RUNNING then
-							if production.costsPerActiveHour ~= nil then
-								local recipeCost = production.costsPerActiveHour * 24 * daysPerMonth
-								prodData.monthlyCosts = prodData.monthlyCosts + recipeCost
+					table.sort(prodData.inputFillTypes, function(a, b) return a.title < b.title end)
+					table.sort(prodData.outputFillTypes, function(a, b) return a.title < b.title end)
+
+					-- ========================
+					-- Recipes
+					-- ========================
+					if productionPoint.productions ~= nil then
+						for _, production in pairs(productionPoint.productions) do
+							if production.status ~= ProductionPoint.PROD_STATUS.INACTIVE then
+								table.insert(prodData.recipes, {
+									name = production.name or "Unknown Recipe",
+									isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING,
+									inputs = production.inputs or {},
+									outputs = production.outputs or {}
+								})
 							end
 						end
 					end
-				end
-				
-				prodData.monthlyIncome = prodData.monthlyRevenue - prodData.monthlyCosts
 
-				table.insert(self.productions, prodData)
+					-- ========================
+					-- Financials
+					-- ========================
+					local daysPerMonth = g_currentMission.missionInfo.timeScale or 1
+
+					-- Revenue from outputs
+					for _, ft in pairs(prodData.outputFillTypes) do
+						local idx = g_fillTypeManager:getFillTypeIndexByName(ft.name)
+						if idx then
+							local price = g_currentMission.economyManager:getPricePerLiter(idx)
+							if price then
+								prodData.monthlyRevenue = prodData.monthlyRevenue + (ft.liters * price)
+							end
+						end
+					end
+
+					-- Daily upkeep (building)
+					if productionPoint.owningPlaceable then
+						local upkeep = productionPoint.owningPlaceable:getDailyUpkeep()
+						if upkeep and upkeep > 0 then
+							prodData.dailyUpkeep = upkeep
+							prodData.monthlyCosts = prodData.monthlyCosts + (upkeep * daysPerMonth)
+						end
+					end
+
+					-- Base production point cost
+					if productionPoint.costsPerActiveHour ~= nil then
+						prodData.monthlyCosts = prodData.monthlyCosts +
+							(productionPoint.costsPerActiveHour * 24 * daysPerMonth)
+					end
+
+					-- Recipe-specific running costs
+					if productionPoint.productions ~= nil then
+						for _, production in pairs(productionPoint.productions) do
+							if production.status == ProductionPoint.PROD_STATUS.RUNNING then
+								if production.costsPerActiveHour ~= nil then
+									prodData.monthlyCosts = prodData.monthlyCosts +
+										(production.costsPerActiveHour * 24 * daysPerMonth)
+								end
+							end
+						end
+					end
+
+					prodData.monthlyIncome = prodData.monthlyRevenue - prodData.monthlyCosts
+					table.insert(self.productions, prodData)
+				end
 			end
 		end
 	end
 
-	table.sort(self.productions, function(a, b)
-		return a.name < b.name
-	end)
-
-	-- Build display rows
+	table.sort(self.productions, function(a, b) return a.name < b.name end)
 	self:buildDisplayRows()
 	self.overviewTable:reloadData()
 end
+
 
 function ProductionDlgFrame:buildDisplayRows()
 	self.displayRows = {}

@@ -12,19 +12,22 @@ function ProductionSettingsEvent.emptyNew()
     return self
 end
 
-function ProductionSettingsEvent.new(autoManageEnabled)
+function ProductionSettingsEvent.new(autoManageEnabled, hideInactiveProductions)
     local self = ProductionSettingsEvent.emptyNew()
     self.autoManageEnabled = autoManageEnabled
+    self.hideInactiveProductions = hideInactiveProductions
     return self
 end
 
 function ProductionSettingsEvent:readStream(streamId, connection)
     self.autoManageEnabled = streamReadBool(streamId)
+    self.hideInactiveProductions = streamReadBool(streamId)
     self:run(connection)
 end
 
 function ProductionSettingsEvent:writeStream(streamId, connection)
     streamWriteBool(streamId, self.autoManageEnabled)
+    streamWriteBool(streamId, self.hideInactiveProductions)
 end
 
 function ProductionSettingsEvent:run(connection)
@@ -36,6 +39,7 @@ function ProductionSettingsEvent:run(connection)
         end
         
         ProductionSettings.autoManageEnabled = self.autoManageEnabled
+        ProductionSettings.hideInactiveProductions = self.hideInactiveProductions
         
         -- Update UI if menu is open
         local menu = g_gui.screenControllers[InGameMenu]
@@ -44,12 +48,16 @@ function ProductionSettingsEvent:run(connection)
                 if control.id == "autoManageEnabled" then
                     local stateIndex = ProductionSettings.getStateIndex("autoManageEnabled")
                     control:setState(stateIndex)
+                elseif control.id == "hideInactiveProductions" then
+                    local stateIndex = ProductionSettings.getStateIndex("hideInactiveProductions")
+                    control:setState(stateIndex)
                 end
             end
         end
     else
         -- Server receives settings from client
         ProductionSettings.autoManageEnabled = self.autoManageEnabled
+        ProductionSettings.hideInactiveProductions = self.hideInactiveProductions
         
         -- Broadcast to all other clients
         ProductionSettings.sendSettingsToClients()
@@ -66,20 +74,37 @@ ProductionSettings.SETTINGS.autoManageEnabled = {
     }
 }
 
--- Default value (will be loaded from XML)
+-- Hide inactive productions setting options
+ProductionSettings.SETTINGS.hideInactiveProductions = {
+    ['default'] = 2,  -- Default to OFF (show inactive productions)
+    ['values'] = {true, false},
+    ['strings'] = {
+        g_i18n:getText("production_setting_hide_inactive_on"),
+        g_i18n:getText("production_setting_hide_inactive_off")
+    }
+}
+
+-- Default values (will be loaded from XML)
 ProductionSettings.autoManageEnabled = false
+ProductionSettings.hideInactiveProductions = false
 
 -- Send settings to all clients
 function ProductionSettings.sendSettingsToClients()
     if g_server ~= nil then
-        g_server:broadcastEvent(ProductionSettingsEvent.new(ProductionSettings.autoManageEnabled))
+        g_server:broadcastEvent(ProductionSettingsEvent.new(
+            ProductionSettings.autoManageEnabled,
+            ProductionSettings.hideInactiveProductions
+        ))
     end
 end
 
 -- Send settings to server (from client)
 function ProductionSettings.sendSettingsToServer()
     if g_client ~= nil and not g_currentMission:getIsServer() then
-        g_client:getServerConnection():sendEvent(ProductionSettingsEvent.new(ProductionSettings.autoManageEnabled))
+        g_client:getServerConnection():sendEvent(ProductionSettingsEvent.new(
+            ProductionSettings.autoManageEnabled,
+            ProductionSettings.hideInactiveProductions
+        ))
     end
 end
 
@@ -149,6 +174,11 @@ function ProductionSettings.loadSettings()
         ProductionSettings.setValue("autoManageEnabled", autoManageEnabled)
     end
     
+    local hideInactiveProductions = getXMLBool(xmlFile, "production.settings#hideInactiveProductions")
+    if hideInactiveProductions ~= nil then
+        ProductionSettings.setValue("hideInactiveProductions", hideInactiveProductions)
+    end
+    
     delete(xmlFile)
 end
 
@@ -171,6 +201,7 @@ function ProductionSettings.saveSettings()
     end
     
     setXMLBool(xmlFile, "production.settings#autoManageEnabled", ProductionSettings.autoManageEnabled)
+    setXMLBool(xmlFile, "production.settings#hideInactiveProductions", ProductionSettings.hideInactiveProductions)
     
     saveXMLFile(xmlFile)
     delete(xmlFile)
@@ -230,13 +261,13 @@ function ProductionSettings.injectMenu()
     table.insert(settingsPage.controlsList, sectionTitle)
     ProductionSettings.CONTROLS["sectionHeader"] = sectionTitle
     
-    -- Create auto-manage setting
     local originalBox = settingsPage.multiVolumeVoiceBox
     if not originalBox then
         print("ProductionSettings: multiVolumeVoiceBox not found!")
         return
     end
     
+    -- Create auto-manage setting
     local autoManageBox = originalBox:clone(layoutToUse)
     autoManageBox.id = "autoManageEnabledBox"
     
@@ -260,6 +291,31 @@ function ProductionSettings.injectMenu()
     
     updateFocusIds(autoManageBox)
     table.insert(settingsPage.controlsList, autoManageBox)
+    
+    -- Create hide inactive productions setting
+    local hideInactiveBox = originalBox:clone(layoutToUse)
+    hideInactiveBox.id = "hideInactiveProductionsBox"
+    
+    local hideInactiveOption = hideInactiveBox.elements[1]
+    hideInactiveOption.id = "hideInactiveProductions"
+    hideInactiveOption.target = ProductionControls
+    
+    hideInactiveOption:setCallback("onClickCallback", "onMenuOptionChanged")
+    hideInactiveOption:setDisabled(false)
+    
+    local hideInactiveToolTip = hideInactiveOption.elements[1]
+    hideInactiveToolTip:setText(g_i18n:getText("production_menu_hide_inactive_tooltip"))
+    hideInactiveBox.elements[2]:setText(g_i18n:getText("production_menu_hide_inactive"))
+    
+    hideInactiveOption:setTexts(ProductionSettings.SETTINGS.hideInactiveProductions.strings)
+    
+    local hideInactiveStateIndex = ProductionSettings.getStateIndex("hideInactiveProductions")
+    hideInactiveOption:setState(hideInactiveStateIndex)
+    
+    ProductionSettings.CONTROLS["hideInactiveProductions"] = hideInactiveOption
+    
+    updateFocusIds(hideInactiveBox)
+    table.insert(settingsPage.controlsList, hideInactiveBox)
     
     layoutToUse:invalidateLayout()
 end

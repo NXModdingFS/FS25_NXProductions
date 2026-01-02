@@ -37,5 +37,10 @@
         <text name="production_menu_automanage_tooltip" text="Automatically activate/deactivate productions based on input availability and output capacity" />
         <text name="production_setting_automanage_on" text="Enabled" />
         <text name="production_setting_automanage_off" text="Disabled" />
+
+        <text name="production_menu_hide_inactive" text="Hide Inactive Productions" />
+        <text name="production_menu_hide_inactive_tooltip" text="Hide production facilities that have no active recipes running" />
+        <text name="production_setting_hide_inactive_on" text="Enabled" />
+        <text name="production_setting_hide_inactive_off" text="Disabled" />
     </texts>
 </l10n>
