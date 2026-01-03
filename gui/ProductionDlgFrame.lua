@@ -40,7 +40,6 @@ function ProductionDlgFrame:loadProductionData()
 		for _, productionPoint in pairs(g_currentMission.productionChainManager.productionPoints) do
 			if productionPoint.ownerFarmId == g_currentMission:getFarmId() then
 
-				-- Lua 5.1 safe replacement for goto/continue
 				local hasActiveProduction = true
 				if ProductionSettings and ProductionSettings.hideInactiveProductions then
 					hasActiveProduction = false
@@ -73,9 +72,6 @@ function ProductionDlgFrame:loadProductionData()
 						productionPoint = productionPoint
 					}
 
-					-- ========================
-					-- Fill types
-					-- ========================
 					if productionPoint.storage ~= nil and productionPoint.storage.fillTypes ~= nil then
 						local inputFillTypeIndices = {}
 						local outputFillTypeIndices = {}
@@ -124,25 +120,24 @@ function ProductionDlgFrame:loadProductionData()
 					table.sort(prodData.inputFillTypes, function(a, b) return a.title < b.title end)
 					table.sort(prodData.outputFillTypes, function(a, b) return a.title < b.title end)
 
-					-- ========================
-					-- Recipes
-					-- ========================
+					-- CHANGED: Show ALL recipes, not just non-inactive ones
 					if productionPoint.productions ~= nil then
 						for _, production in pairs(productionPoint.productions) do
-							if production.status ~= ProductionPoint.PROD_STATUS.INACTIVE then
-								table.insert(prodData.recipes, {
-									name = production.name or "Unknown Recipe",
-									isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING,
-									inputs = production.inputs or {},
-									outputs = production.outputs or {}
-								})
-							end
+							-- Remove the status filter - show all recipes regardless of status
+							-- Clean up recipe name by removing anything in parentheses
+							local cleanName = production.name or "Unknown Recipe"
+							cleanName = cleanName:gsub("%s*%b()%s*", "")  -- Remove (ingredient) from name
+							
+							table.insert(prodData.recipes, {
+								name = cleanName,
+								isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING,
+								status = production.status,  -- Store the full status
+								inputs = production.inputs or {},
+								outputs = production.outputs or {}
+							})
 						end
 					end
 
-					-- ========================
-					-- Financials
-					-- ========================
 					local daysPerMonth = g_currentMission.missionInfo.timeScale or 1
 
 					-- Revenue from outputs
@@ -368,14 +363,25 @@ function ProductionDlgFrame:onClickExportCSV()
 	end
 	
 	-- Write CSV Header
-	file:write('"Production Name","Type","Fill Type","Amount (L)","Capacity (L)","Fill %","Daily Upkeep ($)","Monthly Revenue ($)","Monthly Costs ($)","Net Profit ($)"\n')
+	file:write('"Production Name","Status","Type","Fill Type","Amount (L)","Capacity (L)","Fill %","Daily Upkeep ($)","Monthly Revenue ($)","Monthly Costs ($)","Net Profit ($)"\n')
 	
 	-- Export data for each production
 	for _, prod in ipairs(self.productions) do
+		-- Calculate active recipe count
+		local activeCount = 0
+		local totalCount = #prod.recipes
+		for _, recipe in ipairs(prod.recipes) do
+			if recipe.status == ProductionPoint.PROD_STATUS.RUNNING then
+				activeCount = activeCount + 1
+			end
+		end
+		local statusText = string.format("Active %d/%d", activeCount, totalCount)
+		
 		-- Export input fill types
 		for _, fillType in ipairs(prod.inputFillTypes) do
-			file:write(string.format('"%s","Input","%s","%d","%d","%.2f","","","",""\n',
+			file:write(string.format('"%s","%s","Input","%s","%d","%d","%.2f","","","",""\n',
 				prod.name or "",
+				statusText,
 				fillType.title or "",
 				math.floor(fillType.liters),
 				math.floor(fillType.capacity),
@@ -385,8 +391,9 @@ function ProductionDlgFrame:onClickExportCSV()
 		
 		-- Export output fill types
 		for _, fillType in ipairs(prod.outputFillTypes) do
-			file:write(string.format('"%s","Output","%s","%d","%d","%.2f","","","",""\n',
+			file:write(string.format('"%s","%s","Output","%s","%d","%d","%.2f","","","",""\n',
 				prod.name or "",
+				statusText,
 				fillType.title or "",
 				math.floor(fillType.liters),
 				math.floor(fillType.capacity),
@@ -395,8 +402,9 @@ function ProductionDlgFrame:onClickExportCSV()
 		end
 		
 		-- Export financial summary for this production
-		file:write(string.format('"%s","Finance Summary","","","","","%.2f","%d","%d","%d"\n',
+		file:write(string.format('"%s","%s","Finance Summary","","","","","%.2f","%d","%d","%d"\n',
 			prod.name or "",
+			statusText,
 			prod.dailyUpkeep,
 			math.floor(prod.monthlyRevenue),
 			math.floor(prod.monthlyCosts),
@@ -497,18 +505,34 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 				fillCapacity:setTextColor(1, 1, 1, 1)
 				
 				if self.showRecipes then
-					-- Recipe display
-					if fillType.outputs and #fillType.outputs > 0 and fillType.outputs[1].hudOverlayFilename then
-						fillIcon:setImageFilename(fillType.outputs[1].hudOverlayFilename)
+					-- Recipe display - get icon from first output
+					local iconFilename = nil
+					if fillType.outputs and #fillType.outputs > 0 then
+						local outputType = fillType.outputs[1].type
+						if outputType then
+							local outputFillType = g_fillTypeManager:getFillTypeByIndex(outputType)
+							if outputFillType then
+								iconFilename = outputFillType.hudOverlayFilename
+							end
+						end
+					end
+					
+					if iconFilename and iconFilename ~= "" then
+						fillIcon:setImageFilename(iconFilename)
 						fillIcon:setVisible(true)
 					else
 						fillIcon:setVisible(false)
 					end
 					
-					-- Just show recipe name and status (no inputs/outputs)
-					local statusText = fillType.isActive and "(Active)" or "(Inactive)"
-					local recipeText = string.format("%s %s", fillType.name, statusText)
+					-- Show recipe name and status
+					local statusText
+					if fillType.status == ProductionPoint.PROD_STATUS.RUNNING then
+						statusText = "(Active)"
+					else
+						statusText = "(Inactive)"
+					end
 					
+					local recipeText = string.format("%s %s", fillType.name, statusText)
 					fillCapacity:setText(recipeText)
 					fillCapacity:setVisible(true)
 				else
@@ -546,14 +570,33 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 					fillCapacity:setTextColor(1, 1, 1, 1)
 					
 					if self.showRecipes then
-						if fillType.outputs and #fillType.outputs > 0 and fillType.outputs[1].hudOverlayFilename then
-							fillIcon:setImageFilename(fillType.outputs[1].hudOverlayFilename)
+						-- Recipe display - get icon from first output
+						local iconFilename = nil
+						if fillType.outputs and #fillType.outputs > 0 then
+							local outputType = fillType.outputs[1].type
+							if outputType then
+								local outputFillType = g_fillTypeManager:getFillTypeByIndex(outputType)
+								if outputFillType then
+									iconFilename = outputFillType.hudOverlayFilename
+								end
+							end
+						end
+						
+						if iconFilename and iconFilename ~= "" then
+							fillIcon:setImageFilename(iconFilename)
 							fillIcon:setVisible(true)
 						else
 							fillIcon:setVisible(false)
 						end
 						
-						local statusText = fillType.isActive and "(Active)" or "(Inactive)"
+						-- Show recipe name and status
+						local statusText
+						if fillType.status == ProductionPoint.PROD_STATUS.RUNNING then
+							statusText = "(Active)"
+						else
+							statusText = "(Inactive)"
+						end
+						
 						local recipeText = string.format("%s %s", fillType.name, statusText)
 						fillCapacity:setText(recipeText)
 						fillCapacity:setVisible(true)

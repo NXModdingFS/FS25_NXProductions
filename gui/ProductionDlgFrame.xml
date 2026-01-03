@@ -73,6 +73,11 @@
                     <Text profile="ProductionDlgRowCellLeft" position="1023px 35px" size="117px 35px" name="fillCapacity10" textSize="12px"/>
                 </ListItem>
             </SmoothList>
+
+            <!-- Scrollbar using Slider component -->
+            <ThreePartBitmap profile="fs25_listSliderBox" position="-35px -50px" size="12px 545px" with="anchorTopRight">
+                <Slider profile="fs25_listSlider" size="6px 537px" dataElementId="overviewTable" id="tableSlider" />
+            </ThreePartBitmap>
         </GuiElement>
 
         <!-- Buttons at Bottom -->
