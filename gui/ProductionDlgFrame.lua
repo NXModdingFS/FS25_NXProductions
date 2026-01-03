@@ -56,8 +56,10 @@ function ProductionDlgFrame:loadProductionData()
 				if hasActiveProduction then
 					-- Determine if production is Parallel or Sequential
 					local modeIndicator = ""
-					if productionPoint.parallelProduction ~= nil then
-						modeIndicator = productionPoint.parallelProduction and " (P)" or " (S)"
+					if productionPoint.sharedThroughputCapacity ~= nil then
+						-- false = Parallel (each recipe gets full throughput - all advance each tick)
+						-- true = Sequential (recipes share throughput - only one advances per tick)
+						modeIndicator = productionPoint.sharedThroughputCapacity and " (S)" or " (P)"
 					end
 					
 					local prodData = {
