@@ -28,9 +28,62 @@ function ProductionDlgFrame:onOpen()
 	self:updateRecipeButtonText()
 	self:loadProductionData()
 
+	-- Add input action hints to buttons
+	if self.toggleButton ~= nil then
+		self.toggleButton:setInputAction(InputAction.MENU_EXTRA_1)
+	end
+	
+	if self.recipeButton ~= nil then
+		self.recipeButton:setInputAction(InputAction.MENU_EXTRA_2)
+	end
+	
+	if self.financesButton ~= nil then
+		self.financesButton:setInputAction(InputAction.MENU_PAGE_PREV)
+	end
+	
+	if self.exportButton ~= nil then
+		self.exportButton:setInputAction(InputAction.MENU_PAGE_NEXT)
+	end
+
 	self:setSoundSuppressed(true)
     FocusManager:setFocus(self.overviewTable)
     self:setSoundSuppressed(false)
+end
+
+function ProductionDlgFrame:onClickOk()
+	-- Override to prevent default OK behavior
+	return false
+end
+
+function ProductionDlgFrame:inputEvent(action, value, eventUsed)
+
+	if eventUsed then
+		return eventUsed
+	end
+	
+	if value == 0 then
+		return eventUsed
+	end
+	
+	if action == InputAction.MENU_EXTRA_1 then
+
+		self:onClickToggle()
+		return true
+	elseif action == InputAction.MENU_EXTRA_2 then
+
+		self:onClickRecipes()
+		return true
+	elseif action == InputAction.MENU_PAGE_PREV then
+
+		self:onClickFinances()
+		return true
+	elseif action == InputAction.MENU_PAGE_NEXT then
+
+		self:onClickExportCSV()
+		return true
+	end
+
+	return ProductionDlgFrame:superClass().inputEvent(self, action, value, eventUsed)
 end
 
 function ProductionDlgFrame:loadProductionData()
@@ -54,11 +107,10 @@ function ProductionDlgFrame:loadProductionData()
 				end
 
 				if hasActiveProduction then
-					-- Determine if production is Parallel or Sequential
+		
 					local modeIndicator = ""
 					if productionPoint.sharedThroughputCapacity ~= nil then
-						-- false = Parallel (each recipe gets full throughput - all advance each tick)
-						-- true = Sequential (recipes share throughput - only one advances per tick)
+			
 						modeIndicator = productionPoint.sharedThroughputCapacity and " (S)" or " (P)"
 					end
 					
@@ -122,13 +174,12 @@ function ProductionDlgFrame:loadProductionData()
 					table.sort(prodData.inputFillTypes, function(a, b) return a.title < b.title end)
 					table.sort(prodData.outputFillTypes, function(a, b) return a.title < b.title end)
 
-					-- CHANGED: Show ALL recipes, not just non-inactive ones
+			
 					if productionPoint.productions ~= nil then
 						for _, production in pairs(productionPoint.productions) do
-							-- Remove the status filter - show all recipes regardless of status
-							-- Clean up recipe name by removing anything in parentheses
+				
 							local cleanName = production.name or "Unknown Recipe"
-							cleanName = cleanName:gsub("%s*%b()%s*", "")  -- Remove (ingredient) from name
+							cleanName = cleanName:gsub("%s*%b()%s*", "")  
 							
 							table.insert(prodData.recipes, {
 								name = cleanName,
@@ -153,7 +204,6 @@ function ProductionDlgFrame:loadProductionData()
 						end
 					end
 
-					-- Daily upkeep (building)
 					if productionPoint.owningPlaceable then
 						local upkeep = productionPoint.owningPlaceable:getDailyUpkeep()
 						if upkeep and upkeep > 0 then
@@ -162,13 +212,11 @@ function ProductionDlgFrame:loadProductionData()
 						end
 					end
 
-					-- Base production point cost
 					if productionPoint.costsPerActiveHour ~= nil then
 						prodData.monthlyCosts = prodData.monthlyCosts +
 							(productionPoint.costsPerActiveHour * 24 * daysPerMonth)
 					end
 
-					-- Recipe-specific running costs
 					if productionPoint.productions ~= nil then
 						for _, production in pairs(productionPoint.productions) do
 							if production.status == ProductionPoint.PROD_STATUS.RUNNING then
@@ -200,7 +248,7 @@ function ProductionDlgFrame:buildDisplayRows()
 		local fillTypes
 		
 		if self.showFinances then
-			-- For finances view, we just show one row per production
+
 			table.insert(self.displayRows, {
 				production = prod,
 				rowType = "finance",
@@ -223,8 +271,7 @@ function ProductionDlgFrame:buildDisplayRows()
 				startIndex = 1,
 				endIndex = 5
 			})
-			
-			-- Row 2: Items 6-10 (only if more than 5 items)
+
 			if #fillTypes > 5 then
 				table.insert(self.displayRows, {
 					production = prod,
@@ -326,7 +373,7 @@ function ProductionDlgFrame:onClickToggle()
 end
 
 function ProductionDlgFrame:onClickExportCSV()
-	-- Check if there's data to export
+
 	if #self.productions == 0 then
 		g_gui:showInfoDialog({
 			dialogType = DialogElement.TYPE_INFO,
@@ -343,12 +390,10 @@ function ProductionDlgFrame:onClickExportCSV()
 		env.currentPeriod or 1,
 		env.currentDay or 1
 	)
-	
-	-- Get modSettings directory and create FS25_NXProductionsDump folder
+
 	local modsDir = getUserProfileAppPath() .. "modSettings"
 	local exportDir = modsDir .. "/FS25_NXProductionsDump"
-	
-	-- Create the FS25_NXProductionsDump directory if it doesn't exist
+
 	createFolder(exportDir)
 	
 	local filepath = exportDir .. "/" .. filename
@@ -363,13 +408,11 @@ function ProductionDlgFrame:onClickExportCSV()
 		})
 		return
 	end
-	
-	-- Write CSV Header
+
 	file:write('"Production Name","Status","Type","Fill Type","Amount (L)","Capacity (L)","Fill %","Daily Upkeep ($)","Monthly Revenue ($)","Monthly Costs ($)","Net Profit ($)"\n')
-	
-	-- Export data for each production
+
 	for _, prod in ipairs(self.productions) do
-		-- Calculate active recipe count
+
 		local activeCount = 0
 		local totalCount = #prod.recipes
 		for _, recipe in ipairs(prod.recipes) do
@@ -378,8 +421,7 @@ function ProductionDlgFrame:onClickExportCSV()
 			end
 		end
 		local statusText = string.format("Active %d/%d", activeCount, totalCount)
-		
-		-- Export input fill types
+
 		for _, fillType in ipairs(prod.inputFillTypes) do
 			file:write(string.format('"%s","%s","Input","%s","%d","%d","%.2f","","","",""\n',
 				prod.name or "",
@@ -390,8 +432,7 @@ function ProductionDlgFrame:onClickExportCSV()
 				fillType.fillPercent
 			))
 		end
-		
-		-- Export output fill types
+
 		for _, fillType in ipairs(prod.outputFillTypes) do
 			file:write(string.format('"%s","%s","Output","%s","%d","%d","%.2f","","","",""\n',
 				prod.name or "",
@@ -402,8 +443,7 @@ function ProductionDlgFrame:onClickExportCSV()
 				fillType.fillPercent
 			))
 		end
-		
-		-- Export financial summary for this production
+
 		file:write(string.format('"%s","%s","Finance Summary","","","","","%.2f","%d","%d","%d"\n',
 			prod.name or "",
 			statusText,
@@ -412,15 +452,13 @@ function ProductionDlgFrame:onClickExportCSV()
 			math.floor(prod.monthlyCosts),
 			math.floor(prod.monthlyIncome)
 		))
-		
-		-- Add blank line between productions
+
 		file:write("\n")
 	end
-	
-	-- Close the file
+
 	file:close()
 	
-	-- Show success dialog with folder location
+
 	g_gui:showInfoDialog({
 		dialogType = DialogElement.TYPE_INFO,
 		text = string.format(g_i18n:getText("ui_productionDlg_exportSuccess") .. "\nLocation: modSettings/FS25_NXProductionsDump/", filename)
@@ -446,33 +484,32 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 		local prod = row.production
 		local fillTypes = row.fillTypes
 
-		-- Finance view - ONLY PLACE WITH COLORS
+
 		if row.rowType == "finance" then
 			cell:getAttribute("productionName"):setText(prod.name)
 			cell:getAttribute("productionName"):setVisible(true)
 			
-			-- Display financial data in the fill type columns (just values, no labels)
 			local revenueText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyRevenue)))
 			local costsText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyCosts)))
 			local profitText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyIncome)))
 			
 			cell:getAttribute("fillIcon1"):setVisible(false)
 			cell:getAttribute("fillCapacity1"):setText(revenueText)
-			cell:getAttribute("fillCapacity1"):setTextColor(1, 1, 1, 1)  -- White for revenue
+			cell:getAttribute("fillCapacity1"):setTextColor(1, 1, 1, 1)  
 			cell:getAttribute("fillCapacity1"):setVisible(true)
 			
 			cell:getAttribute("fillIcon2"):setVisible(false)
 			cell:getAttribute("fillCapacity2"):setText(costsText)
-			cell:getAttribute("fillCapacity2"):setTextColor(1, 0, 0, 1)  -- Red for costs
+			cell:getAttribute("fillCapacity2"):setTextColor(1, 0, 0, 1)  
 			cell:getAttribute("fillCapacity2"):setVisible(true)
 			
 			cell:getAttribute("fillIcon3"):setVisible(false)
 			cell:getAttribute("fillCapacity3"):setText(profitText)
 			-- Set color based on profit/loss
 			if prod.monthlyIncome >= 0 then
-				cell:getAttribute("fillCapacity3"):setTextColor(0, 1, 0, 1)  -- Green for positive profit
+				cell:getAttribute("fillCapacity3"):setTextColor(0, 1, 0, 1)  
 			else
-				cell:getAttribute("fillCapacity3"):setTextColor(1, 0, 0, 1)  -- Red for negative profit (loss)
+				cell:getAttribute("fillCapacity3"):setTextColor(1, 0, 0, 1)  
 			end
 			cell:getAttribute("fillCapacity3"):setVisible(true)
 			
@@ -485,7 +522,7 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			return
 		end
 
-		-- Show production name only on first row
+
 		if row.rowType == "row1" then
 			cell:getAttribute("productionName"):setText(prod.name)
 			cell:getAttribute("productionName"):setVisible(true)
@@ -494,7 +531,7 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			cell:getAttribute("productionName"):setVisible(false)
 		end
 
-		-- Display 5 items per row
+
 		for i = 1, 5 do
 			local fillIcon = cell:getAttribute("fillIcon" .. i)
 			local fillCapacity = cell:getAttribute("fillCapacity" .. i)
@@ -526,7 +563,6 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 						fillIcon:setVisible(false)
 					end
 					
-					-- Show recipe name and status
 					local statusText
 					if fillType.status == ProductionPoint.PROD_STATUS.RUNNING then
 						statusText = "(Active)"
@@ -538,7 +574,7 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 					fillCapacity:setText(recipeText)
 					fillCapacity:setVisible(true)
 				else
-					-- Fill type display
+				
 					if fillType.hudOverlayFilename ~= nil and fillType.hudOverlayFilename ~= "" then
 						fillIcon:setImageFilename(fillType.hudOverlayFilename)
 						fillIcon:setVisible(true)
@@ -567,12 +603,11 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 
 				if dataIndex <= #fillTypes and row.rowType == "row2" then
 					local fillType = fillTypes[dataIndex]
-					
-					-- Reset text color to default white
+		
 					fillCapacity:setTextColor(1, 1, 1, 1)
 					
 					if self.showRecipes then
-						-- Recipe display - get icon from first output
+					
 						local iconFilename = nil
 						if fillType.outputs and #fillType.outputs > 0 then
 							local outputType = fillType.outputs[1].type
@@ -591,7 +626,6 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 							fillIcon:setVisible(false)
 						end
 						
-						-- Show recipe name and status
 						local statusText
 						if fillType.status == ProductionPoint.PROD_STATUS.RUNNING then
 							statusText = "(Active)"
