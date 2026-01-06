@@ -4,7 +4,7 @@ local DlgFrame_mt = Class(ProductionDlgFrame, MessageDialog)
 function ProductionDlgFrame.new(target, custom_mt)
 	local self = MessageDialog.new(target, custom_mt or DlgFrame_mt)
     self.productions = {}
-	self.displayRows = {}  -- Flattened list for display
+	self.displayRows = {}
 	self.showInputs = true
 	self.showRecipes = false
 	self.showFinances = false
@@ -28,7 +28,6 @@ function ProductionDlgFrame:onOpen()
 	self:updateRecipeButtonText()
 	self:loadProductionData()
 
-	-- Add input action hints to buttons
 	if self.toggleButton ~= nil then
 		self.toggleButton:setInputAction(InputAction.MENU_EXTRA_1)
 	end
@@ -51,7 +50,6 @@ function ProductionDlgFrame:onOpen()
 end
 
 function ProductionDlgFrame:onClickOk()
-	-- Override to prevent default OK behavior
 	return false
 end
 
@@ -184,7 +182,7 @@ function ProductionDlgFrame:loadProductionData()
 							table.insert(prodData.recipes, {
 								name = cleanName,
 								isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING,
-								status = production.status,  -- Store the full status
+								status = production.status,
 								inputs = production.inputs or {},
 								outputs = production.outputs or {}
 							})
@@ -193,7 +191,6 @@ function ProductionDlgFrame:loadProductionData()
 
 					local daysPerMonth = g_currentMission.missionInfo.timeScale or 1
 
-					-- Revenue from outputs
 					for _, ft in pairs(prodData.outputFillTypes) do
 						local idx = g_fillTypeManager:getFillTypeIndexByName(ft.name)
 						if idx then
@@ -263,7 +260,6 @@ function ProductionDlgFrame:buildDisplayRows()
 				fillTypes = prod.recipes
 			end
 			
-			-- Row 1: Items 1-5 (always add)
 			table.insert(self.displayRows, {
 				production = prod,
 				rowType = "row1",
@@ -316,7 +312,6 @@ end
 function ProductionDlgFrame:onClickFinances()
 	self.showFinances = not self.showFinances
 	
-	-- Update finances button text
 	if self.financesButton ~= nil then
 		if self.showFinances then
 			self.financesButton:setText(g_i18n:getText("ui_productionDlg_btnHideFinances"))
@@ -325,7 +320,6 @@ function ProductionDlgFrame:onClickFinances()
 		end
 	end
 	
-	-- Hide/show other buttons
 	if self.toggleButton ~= nil then
 		self.toggleButton:setVisible(not self.showFinances)
 	end
@@ -333,7 +327,6 @@ function ProductionDlgFrame:onClickFinances()
 		self.recipeButton:setVisible(not self.showFinances)
 	end
 	
-	-- Toggle between header views
 	if self.tableHeaderBox ~= nil then
 		self.tableHeaderBox:setVisible(not self.showFinances)
 	end
@@ -375,20 +368,31 @@ end
 function ProductionDlgFrame:onClickExportCSV()
 
 	if #self.productions == 0 then
-		g_gui:showInfoDialog({
-			dialogType = DialogElement.TYPE_INFO,
-			text = "No production data to export"
-		})
+		InfoDialog.show("No production data to export")
 		return
 	end
 	
-	-- Generate filename with game date
 	local env = g_currentMission.environment
+	local savegameName = g_currentMission.missionInfo.savegameDirectory or "Unknown"
+	
+	savegameName = savegameName:match("([^/\\]+)$") or savegameName
+	
+	savegameName = savegameName:gsub("savegame(%d)$", "savegame0%1")
+	
+	local year = env.currentYear or 1
+	
+	local period = env.currentPeriod or 1
+	local monthMap = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2}
+	local monthNumber = monthMap[period] or 1
+	
+	local dayNumber = env.currentDayInPeriod or 1
+	
 	local filename = string.format(
-		"ProductionExport_Y%d_M%d_D%d.csv",
-		env.currentYear or 1,
-		env.currentPeriod or 1,
-		env.currentDay or 1
+		"ProductionExport_%s_Y%02d_M%02d_D%02d.csv",
+		savegameName,
+		year,
+		monthNumber,
+		dayNumber
 	)
 
 	local modsDir = getUserProfileAppPath() .. "modSettings"
@@ -398,18 +402,28 @@ function ProductionDlgFrame:onClickExportCSV()
 	
 	local filepath = exportDir .. "/" .. filename
 	
-	-- Open file for writing
+	local testFile = io.open(filepath, "r")
+	if testFile then
+		testFile:close()
+		local file = io.open(filepath, "w")
+		if file == nil then
+			InfoDialog.show("Export Failed: File is open in another program")
+			return
+		end
+		file:close()
+	end
+	
 	local file = io.open(filepath, "w")
 	if file == nil then
-		-- Show error dialog
-		g_gui:showInfoDialog({
-			dialogType = DialogElement.TYPE_ERROR,
-			text = g_i18n:getText("ui_productionDlg_exportError")
-		})
+		InfoDialog.show("Export Failed")
 		return
 	end
 
-	file:write('"Production Name","Status","Type","Fill Type","Amount (L)","Capacity (L)","Fill %","Daily Upkeep ($)","Monthly Revenue ($)","Monthly Costs ($)","Net Profit ($)"\n')
+	local currencySymbol = g_i18n:getCurrencySymbol(true)
+	
+	file:write("\239\187\191")
+
+	file:write(string.format('"Production Name","Status","Type","Fill Type","Amount (L)","Capacity (L)","Fill %%","Daily Upkeep (%s)","Monthly Revenue (%s)","Monthly Costs (%s)","Net Profit (%s)"\n', currencySymbol, currencySymbol, currencySymbol, currencySymbol))
 
 	for _, prod in ipairs(self.productions) do
 
@@ -458,11 +472,7 @@ function ProductionDlgFrame:onClickExportCSV()
 
 	file:close()
 	
-
-	g_gui:showInfoDialog({
-		dialogType = DialogElement.TYPE_INFO,
-		text = string.format(g_i18n:getText("ui_productionDlg_exportSuccess") .. "\nLocation: modSettings/FS25_NXProductionsDump/", filename)
-	})
+	InfoDialog.show(string.format("Export Successful!\n\nExported to:\n%s", filename))
 end
 
 function ProductionDlgFrame:getNumberOfItemsInSection(list, section)
@@ -484,14 +494,15 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 		local prod = row.production
 		local fillTypes = row.fillTypes
 
+		local currencySymbol = g_i18n:getCurrencySymbol(true)
 
 		if row.rowType == "finance" then
 			cell:getAttribute("productionName"):setText(prod.name)
 			cell:getAttribute("productionName"):setVisible(true)
 			
-			local revenueText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyRevenue)))
-			local costsText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyCosts)))
-			local profitText = string.format("$%s/mo", self:formatNumber(math.floor(prod.monthlyIncome)))
+			local revenueText = string.format("%s%s/mo", currencySymbol, self:formatNumber(math.floor(prod.monthlyRevenue)))
+			local costsText = string.format("%s%s/mo", currencySymbol, self:formatNumber(math.floor(prod.monthlyCosts)))
+			local profitText = string.format("%s%s/mo", currencySymbol, self:formatNumber(math.floor(prod.monthlyIncome)))
 			
 			cell:getAttribute("fillIcon1"):setVisible(false)
 			cell:getAttribute("fillCapacity1"):setText(revenueText)
@@ -505,7 +516,6 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			
 			cell:getAttribute("fillIcon3"):setVisible(false)
 			cell:getAttribute("fillCapacity3"):setText(profitText)
-			-- Set color based on profit/loss
 			if prod.monthlyIncome >= 0 then
 				cell:getAttribute("fillCapacity3"):setTextColor(0, 1, 0, 1)  
 			else
@@ -513,7 +523,6 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			end
 			cell:getAttribute("fillCapacity3"):setVisible(true)
 			
-			-- Hide remaining columns
 			for i = 4, 10 do
 				cell:getAttribute("fillIcon" .. i):setVisible(false)
 				cell:getAttribute("fillCapacity" .. i):setVisible(false)
@@ -540,11 +549,9 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			if dataIndex <= #fillTypes then
 				local fillType = fillTypes[dataIndex]
 				
-				-- Reset text color to default white for non-finance views
 				fillCapacity:setTextColor(1, 1, 1, 1)
 				
 				if self.showRecipes then
-					-- Recipe display - get icon from first output
 					local iconFilename = nil
 					if fillType.outputs and #fillType.outputs > 0 then
 						local outputType = fillType.outputs[1].type
@@ -594,7 +601,6 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			end
 		end
 		
-		-- Handle bottom row items (6-10) for non-finance views
 		if not self.showFinances then
 			for i = 6, 10 do
 				local fillIcon = cell:getAttribute("fillIcon" .. i)

@@ -30,6 +30,7 @@
         <!-- CSV Export Messages -->
         <text name="ui_productionDlg_exportSuccess" text="Production data exported successfully to: %s" />
         <text name="ui_productionDlg_exportError" text="Failed to export CSV file. Please check file permissions." />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="Cannot export: The CSV file is currently open in another program. Please close it and try again." />
         
         <!-- Production Settings -->
         <text name="production_menu_section_title" text="NX Productions" />
