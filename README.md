@@ -20,7 +20,7 @@ A production management mod for Farming Simulator 25 that provides an overview o
 
 **Usage:**
 
-Press Shift + P to open the production overview.
+Press Right Shift + P to open the production overview.
 
 **Settings Menu** 
 
