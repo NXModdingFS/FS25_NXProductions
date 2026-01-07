@@ -3,8 +3,8 @@
     <translationContributions>
     </translationContributions>
     <texts>
-        <text name="input_SHOW_PRODUCTION_DLG" text="Produzioni NX" />
-        <text name="ui_productionDlg_title" text="Produzioni NX" />
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX Produzioni" />
+        <text name="ui_productionDlg_title" text="NX Produzioni" />
         <text name="ui_productionDlg_btnClose" text="Chiudi" />
         <text name="ui_productionDlg_btnShowOutputs" text="Mostra uscite" />
         <text name="ui_productionDlg_btnShowInputs" text="Mostra ingressi" />
@@ -12,6 +12,7 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="Mostra tipi di riempimento" />
         <text name="ui_productionDlg_btnShowFinances" text="Mostra finanze" />
         <text name="ui_productionDlg_btnHideFinances" text="Nascondi finanze" />
+        <text name="ui_productionDlg_btnExportCSV" text="Esporta CSV" />
         <text name="ui_productionDlg_hbName" text="Nome" />
         <text name="ui_productionDlg_hbInputs" text="Ingressi" />
         <text name="ui_productionDlg_hbOutputs" text="Uscite" />
@@ -26,11 +27,21 @@
         <text name="ui_productionDlg_totalIncome" text="Entrate totali/mese:" />
         <text name="ui_productionDlg_noProductions" text="Nessuna produzione trovata" />
         
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="Dati di produzione esportati con successo in: %s" />
+        <text name="ui_productionDlg_exportError" text="Esportazione CSV fallita. Verificare i permessi del file." />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="Impossibile esportare: Il file CSV è attualmente aperto in un altro programma. Chiuderlo e riprovare." />
+        
         <!-- Production Settings -->
-        <text name="production_menu_section_title" text="Produzioni NX" />
-        <text name="production_menu_automanage" text="Gestione automatica delle produzioni" />
-        <text name="production_menu_automanage_tooltip" text="Attiva o disattiva automaticamente le produzioni in base alla disponibilità degli ingressi e alla capacità delle uscite" />
+        <text name="production_menu_section_title" text="NX Produzioni" />
+        <text name="production_menu_automanage" text="Gestione automatica produzioni" />
+        <text name="production_menu_automanage_tooltip" text="Attivare/disattivare automaticamente le produzioni in base alla disponibilità degli ingressi e capacità delle uscite" />
         <text name="production_setting_automanage_on" text="Attivato" />
         <text name="production_setting_automanage_off" text="Disattivato" />
+
+        <text name="production_menu_hide_inactive" text="Nascondi produzioni inattive" />
+        <text name="production_menu_hide_inactive_tooltip" text="Nascondere gli impianti di produzione senza ricette attive in esecuzione" />
+        <text name="production_setting_hide_inactive_on" text="Attivato" />
+        <text name="production_setting_hide_inactive_off" text="Disattivato" />
     </texts>
 </l10n>

@@ -12,25 +12,36 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="显示填充类型" />
         <text name="ui_productionDlg_btnShowFinances" text="显示财务" />
         <text name="ui_productionDlg_btnHideFinances" text="隐藏财务" />
+        <text name="ui_productionDlg_btnExportCSV" text="导出CSV" />
         <text name="ui_productionDlg_hbName" text="名称" />
         <text name="ui_productionDlg_hbInputs" text="输入" />
         <text name="ui_productionDlg_hbOutputs" text="输出" />
         <text name="ui_productionDlg_hbFillType" text="填充类型" />
         <text name="ui_productionDlg_hbCapacity" text="容量" />
-        <text name="ui_productionDlg_hbIncome" text="每月收入" />
+        <text name="ui_productionDlg_hbIncome" text="月收入" />
         <text name="ui_productionDlg_hbRecipes" text="配方" />
         <text name="ui_productionDlg_hbFinances" text="财务" />
         <text name="ui_productionDlg_hbRevenue" text="收入" />
         <text name="ui_productionDlg_hbCosts" text="成本" />
         <text name="ui_productionDlg_hbProfit" text="净利润" />
-        <text name="ui_productionDlg_totalIncome" text="每月总收入：" />
-        <text name="ui_productionDlg_noProductions" text="未找到生产项目" />
+        <text name="ui_productionDlg_totalIncome" text="总收入/月：" />
+        <text name="ui_productionDlg_noProductions" text="未找到生产设施" />
+        
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="生产数据已成功导出到：%s" />
+        <text name="ui_productionDlg_exportError" text="导出CSV文件失败。请检查文件权限。" />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="无法导出：CSV文件当前在另一个程序中打开。请关闭后重试。" />
         
         <!-- Production Settings -->
         <text name="production_menu_section_title" text="NX 生产" />
         <text name="production_menu_automanage" text="自动管理生产" />
-        <text name="production_menu_automanage_tooltip" text="根据输入可用性和输出容量自动启用或停用生产" />
+        <text name="production_menu_automanage_tooltip" text="根据输入可用性和输出容量自动激活/停用生产" />
         <text name="production_setting_automanage_on" text="已启用" />
         <text name="production_setting_automanage_off" text="已禁用" />
+
+        <text name="production_menu_hide_inactive" text="隐藏非活动生产" />
+        <text name="production_menu_hide_inactive_tooltip" text="隐藏没有活动配方运行的生产设施" />
+        <text name="production_setting_hide_inactive_on" text="已启用" />
+        <text name="production_setting_hide_inactive_off" text="已禁用" />
     </texts>
 </l10n>

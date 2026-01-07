@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributions>
+    </translationContributions>
+    <texts>
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX Produções" />
+        <text name="ui_productionDlg_title" text="NX Produções" />
+        <text name="ui_productionDlg_btnClose" text="Fechar" />
+        <text name="ui_productionDlg_btnShowOutputs" text="Mostrar saídas" />
+        <text name="ui_productionDlg_btnShowInputs" text="Mostrar entradas" />
+        <text name="ui_productionDlg_btnShowRecipes" text="Mostrar receitas" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="Mostrar tipos de enchimento" />
+        <text name="ui_productionDlg_btnShowFinances" text="Mostrar finanças" />
+        <text name="ui_productionDlg_btnHideFinances" text="Ocultar finanças" />
+        <text name="ui_productionDlg_btnExportCSV" text="Exportar CSV" />
+        <text name="ui_productionDlg_hbName" text="Nome" />
+        <text name="ui_productionDlg_hbInputs" text="Entradas" />
+        <text name="ui_productionDlg_hbOutputs" text="Saídas" />
+        <text name="ui_productionDlg_hbFillType" text="Tipo de enchimento" />
+        <text name="ui_productionDlg_hbCapacity" text="Capacidade" />
+        <text name="ui_productionDlg_hbIncome" text="Renda mensal" />
+        <text name="ui_productionDlg_hbRecipes" text="Receitas" />
+        <text name="ui_productionDlg_hbFinances" text="Finanças" />
+        <text name="ui_productionDlg_hbRevenue" text="Receita" />
+        <text name="ui_productionDlg_hbCosts" text="Custos" />
+        <text name="ui_productionDlg_hbProfit" text="Lucro líquido" />
+        <text name="ui_productionDlg_totalIncome" text="Renda total/mês:" />
+        <text name="ui_productionDlg_noProductions" text="Nenhuma produção encontrada" />
+        
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="Dados de produção exportados com sucesso para: %s" />
+        <text name="ui_productionDlg_exportError" text="Falha ao exportar arquivo CSV. Verifique as permissões do arquivo." />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="Não é possível exportar: O arquivo CSV está aberto em outro programa. Feche-o e tente novamente." />
+        
+        <!-- Production Settings -->
+        <text name="production_menu_section_title" text="NX Produções" />
+        <text name="production_menu_automanage" text="Gerenciar produções automaticamente" />
+        <text name="production_menu_automanage_tooltip" text="Ativar/desativar automaticamente as produções com base na disponibilidade de entrada e capacidade de saída" />
+        <text name="production_setting_automanage_on" text="Ativado" />
+        <text name="production_setting_automanage_off" text="Desativado" />
+
+        <text name="production_menu_hide_inactive" text="Ocultar produções inativas" />
+        <text name="production_menu_hide_inactive_tooltip" text="Ocultar instalações de produção que não têm receitas ativas em execução" />
+        <text name="production_setting_hide_inactive_on" text="Ativado" />
+        <text name="production_setting_hide_inactive_off" text="Desativado" />
+    </texts>
+</l10n>

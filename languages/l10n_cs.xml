@@ -3,8 +3,8 @@
     <translationContributions>
     </translationContributions>
     <texts>
-        <text name="input_SHOW_PRODUCTION_DLG" text="Produkce NX" />
-        <text name="ui_productionDlg_title" text="Produkce NX" />
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX Produkce" />
+        <text name="ui_productionDlg_title" text="NX Produkce" />
         <text name="ui_productionDlg_btnClose" text="Zavřít" />
         <text name="ui_productionDlg_btnShowOutputs" text="Zobrazit výstupy" />
         <text name="ui_productionDlg_btnShowInputs" text="Zobrazit vstupy" />
@@ -12,6 +12,7 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="Zobrazit typy plnění" />
         <text name="ui_productionDlg_btnShowFinances" text="Zobrazit finance" />
         <text name="ui_productionDlg_btnHideFinances" text="Skrýt finance" />
+        <text name="ui_productionDlg_btnExportCSV" text="Exportovat CSV" />
         <text name="ui_productionDlg_hbName" text="Název" />
         <text name="ui_productionDlg_hbInputs" text="Vstupy" />
         <text name="ui_productionDlg_hbOutputs" text="Výstupy" />
@@ -26,11 +27,21 @@
         <text name="ui_productionDlg_totalIncome" text="Celkový příjem/měsíc:" />
         <text name="ui_productionDlg_noProductions" text="Nebyly nalezeny žádné produkce" />
         
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="Data produkce byla úspěšně exportována do: %s" />
+        <text name="ui_productionDlg_exportError" text="Export CSV souboru se nezdařil. Zkontrolujte oprávnění k souboru." />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="Nelze exportovat: CSV soubor je aktuálně otevřen v jiném programu. Zavřete jej a zkuste to znovu." />
+        
         <!-- Production Settings -->
-        <text name="production_menu_section_title" text="Produkce NX" />
+        <text name="production_menu_section_title" text="NX Produkce" />
         <text name="production_menu_automanage" text="Automatická správa produkcí" />
-        <text name="production_menu_automanage_tooltip" text="Automaticky zapíná nebo vypíná produkce podle dostupnosti vstupů a kapacity výstupů" />
+        <text name="production_menu_automanage_tooltip" text="Automaticky aktivovat/deaktivovat produkce na základě dostupnosti vstupů a výstupní kapacity" />
         <text name="production_setting_automanage_on" text="Zapnuto" />
         <text name="production_setting_automanage_off" text="Vypnuto" />
+
+        <text name="production_menu_hide_inactive" text="Skrýt neaktivní produkce" />
+        <text name="production_menu_hide_inactive_tooltip" text="Skrýt produkční zařízení, která nemají spuštěné žádné aktivní recepty" />
+        <text name="production_setting_hide_inactive_on" text="Zapnuto" />
+        <text name="production_setting_hide_inactive_off" text="Vypnuto" />
     </texts>
 </l10n>

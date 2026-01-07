@@ -3,34 +3,45 @@
     <translationContributions>
     </translationContributions>
     <texts>
-        <text name="input_SHOW_PRODUCTION_DLG" text="NX-producties" />
-        <text name="ui_productionDlg_title" text="NX-producties" />
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX Producties" />
+        <text name="ui_productionDlg_title" text="NX Producties" />
         <text name="ui_productionDlg_btnClose" text="Sluiten" />
         <text name="ui_productionDlg_btnShowOutputs" text="Uitgangen tonen" />
         <text name="ui_productionDlg_btnShowInputs" text="Ingangen tonen" />
         <text name="ui_productionDlg_btnShowRecipes" text="Recepten tonen" />
-        <text name="ui_productionDlg_btnShowFillTypes" text="Vultypen tonen" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="Vultypes tonen" />
         <text name="ui_productionDlg_btnShowFinances" text="Financiën tonen" />
         <text name="ui_productionDlg_btnHideFinances" text="Financiën verbergen" />
+        <text name="ui_productionDlg_btnExportCSV" text="CSV exporteren" />
         <text name="ui_productionDlg_hbName" text="Naam" />
         <text name="ui_productionDlg_hbInputs" text="Ingangen" />
         <text name="ui_productionDlg_hbOutputs" text="Uitgangen" />
         <text name="ui_productionDlg_hbFillType" text="Vultype" />
         <text name="ui_productionDlg_hbCapacity" text="Capaciteit" />
-        <text name="ui_productionDlg_hbIncome" text="Maandelijkse inkomsten" />
+        <text name="ui_productionDlg_hbIncome" text="Maandelijks inkomen" />
         <text name="ui_productionDlg_hbRecipes" text="Recepten" />
         <text name="ui_productionDlg_hbFinances" text="Financiën" />
-        <text name="ui_productionDlg_hbRevenue" text="Opbrengsten" />
+        <text name="ui_productionDlg_hbRevenue" text="Inkomsten" />
         <text name="ui_productionDlg_hbCosts" text="Kosten" />
         <text name="ui_productionDlg_hbProfit" text="Nettowinst" />
-        <text name="ui_productionDlg_totalIncome" text="Totale inkomsten/maand:" />
+        <text name="ui_productionDlg_totalIncome" text="Totaal inkomen/maand:" />
         <text name="ui_productionDlg_noProductions" text="Geen producties gevonden" />
         
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="Productiegegevens succesvol geëxporteerd naar: %s" />
+        <text name="ui_productionDlg_exportError" text="Exporteren van CSV-bestand mislukt. Controleer de bestandsrechten." />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="Kan niet exporteren: Het CSV-bestand is momenteel geopend in een ander programma. Sluit het en probeer het opnieuw." />
+        
         <!-- Production Settings -->
-        <text name="production_menu_section_title" text="NX-producties" />
+        <text name="production_menu_section_title" text="NX Producties" />
         <text name="production_menu_automanage" text="Producties automatisch beheren" />
-        <text name="production_menu_automanage_tooltip" text="Schakelt producties automatisch in of uit op basis van beschikbaarheid van ingangen en capaciteit van uitgangen" />
+        <text name="production_menu_automanage_tooltip" text="Producties automatisch activeren/deactiveren op basis van beschikbaarheid van ingangen en uitgangscapaciteit" />
         <text name="production_setting_automanage_on" text="Ingeschakeld" />
         <text name="production_setting_automanage_off" text="Uitgeschakeld" />
+
+        <text name="production_menu_hide_inactive" text="Inactieve producties verbergen" />
+        <text name="production_menu_hide_inactive_tooltip" text="Productiefaciliteiten verbergen die geen actieve recepten draaien" />
+        <text name="production_setting_hide_inactive_on" text="Ingeschakeld" />
+        <text name="production_setting_hide_inactive_off" text="Uitgeschakeld" />
     </texts>
 </l10n>

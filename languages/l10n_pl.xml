@@ -3,34 +3,45 @@
     <translationContributions>
     </translationContributions>
     <texts>
-        <text name="input_SHOW_PRODUCTION_DLG" text="Produkcje NX" />
-        <text name="ui_productionDlg_title" text="Produkcje NX" />
+        <text name="input_SHOW_PRODUCTION_DLG" text="NX Produkcje" />
+        <text name="ui_productionDlg_title" text="NX Produkcje" />
         <text name="ui_productionDlg_btnClose" text="Zamknij" />
         <text name="ui_productionDlg_btnShowOutputs" text="Pokaż wyjścia" />
         <text name="ui_productionDlg_btnShowInputs" text="Pokaż wejścia" />
         <text name="ui_productionDlg_btnShowRecipes" text="Pokaż receptury" />
-        <text name="ui_productionDlg_btnShowFillTypes" text="Pokaż typy napełniania" />
+        <text name="ui_productionDlg_btnShowFillTypes" text="Pokaż typy wypełnienia" />
         <text name="ui_productionDlg_btnShowFinances" text="Pokaż finanse" />
         <text name="ui_productionDlg_btnHideFinances" text="Ukryj finanse" />
+        <text name="ui_productionDlg_btnExportCSV" text="Eksportuj CSV" />
         <text name="ui_productionDlg_hbName" text="Nazwa" />
         <text name="ui_productionDlg_hbInputs" text="Wejścia" />
         <text name="ui_productionDlg_hbOutputs" text="Wyjścia" />
-        <text name="ui_productionDlg_hbFillType" text="Typ napełniania" />
+        <text name="ui_productionDlg_hbFillType" text="Typ wypełnienia" />
         <text name="ui_productionDlg_hbCapacity" text="Pojemność" />
         <text name="ui_productionDlg_hbIncome" text="Miesięczny dochód" />
         <text name="ui_productionDlg_hbRecipes" text="Receptury" />
         <text name="ui_productionDlg_hbFinances" text="Finanse" />
-        <text name="ui_productionDlg_hbRevenue" text="Przychody" />
+        <text name="ui_productionDlg_hbRevenue" text="Przychód" />
         <text name="ui_productionDlg_hbCosts" text="Koszty" />
         <text name="ui_productionDlg_hbProfit" text="Zysk netto" />
-        <text name="ui_productionDlg_totalIncome" text="Łączny dochód/miesiąc:" />
+        <text name="ui_productionDlg_totalIncome" text="Całkowity dochód/miesiąc:" />
         <text name="ui_productionDlg_noProductions" text="Nie znaleziono produkcji" />
         
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="Dane produkcji zostały pomyślnie wyeksportowane do: %s" />
+        <text name="ui_productionDlg_exportError" text="Nie udało się wyeksportować pliku CSV. Sprawdź uprawnienia do pliku." />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="Nie można eksportować: Plik CSV jest obecnie otwarty w innym programie. Zamknij go i spróbuj ponownie." />
+        
         <!-- Production Settings -->
-        <text name="production_menu_section_title" text="Produkcje NX" />
+        <text name="production_menu_section_title" text="NX Produkcje" />
         <text name="production_menu_automanage" text="Automatyczne zarządzanie produkcjami" />
-        <text name="production_menu_automanage_tooltip" text="Automatycznie włącza lub wyłącza produkcje w zależności od dostępności wejść i pojemności wyjść" />
+        <text name="production_menu_automanage_tooltip" text="Automatycznie aktywuj/dezaktywuj produkcje w oparciu o dostępność wejść i pojemność wyjść" />
         <text name="production_setting_automanage_on" text="Włączone" />
         <text name="production_setting_automanage_off" text="Wyłączone" />
+
+        <text name="production_menu_hide_inactive" text="Ukryj nieaktywne produkcje" />
+        <text name="production_menu_hide_inactive_tooltip" text="Ukryj zakłady produkcyjne, które nie mają uruchomionych aktywnych receptur" />
+        <text name="production_setting_hide_inactive_on" text="Włączone" />
+        <text name="production_setting_hide_inactive_off" text="Wyłączone" />
     </texts>
 </l10n>
