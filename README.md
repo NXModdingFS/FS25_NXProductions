@@ -2,6 +2,12 @@
 
 A production management mod for Farming Simulator 25 that provides an overview of all your production facilities with automatic management capabilities.
 
+**Mod Reviews:**
+
+- Review 1: https://www.youtube.com/watch?v=Ba8uZ0xkE9I
+- Review 2: https://www.youtube.com/watch?v=txaAkGMpJU4
+- Review 3: https://youtu.be/xiBMkSjElYc?si=cDdK42Rq-VnMmoz2
+
 <ins>**Key Features**</ins>
 
 - Production Overview: View all productions with fill levels, capacities, monthly income and processing type.
