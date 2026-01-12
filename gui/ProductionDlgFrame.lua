@@ -239,47 +239,41 @@ end
 
 
 function ProductionDlgFrame:buildDisplayRows()
-	self.displayRows = {}
-	
-	for _, prod in ipairs(self.productions) do
-		local fillTypes
-		
-		if self.showFinances then
+    self.displayRows = {}
 
-			table.insert(self.displayRows, {
-				production = prod,
-				rowType = "finance",
-				fillTypes = {},
-				startIndex = 1,
-				endIndex = 0
-			})
-		else
-			fillTypes = self.showInputs and prod.inputFillTypes or prod.outputFillTypes
-			
-			if self.showRecipes then
-				fillTypes = prod.recipes
-			end
-			
-			table.insert(self.displayRows, {
-				production = prod,
-				rowType = "row1",
-				fillTypes = fillTypes,
-				startIndex = 1,
-				endIndex = 5
-			})
+    for _, prod in ipairs(self.productions) do
+        if self.showFinances then
+            table.insert(self.displayRows, {
+                production = prod,
+                rowType = "finance",
+                fillTypes = {},
+                startIndex = 1,
+                endIndex = 0
+            })
+        else
+            local fillTypes = self.showInputs and prod.inputFillTypes or prod.outputFillTypes
+            if self.showRecipes then
+                fillTypes = prod.recipes
+            end
 
-			if #fillTypes > 5 then
-				table.insert(self.displayRows, {
-					production = prod,
-					rowType = "row2",
-					fillTypes = fillTypes,
-					startIndex = 6,
-					endIndex = 10
-				})
-			end
-		end
-	end
+            local index = 1
+            while index <= #fillTypes do
+                local endIndex = math.min(index + 4, #fillTypes)
+
+                table.insert(self.displayRows, {
+                    production = prod,
+                    rowType = index == 1 and "row1" or "rowN",
+                    fillTypes = fillTypes,
+                    startIndex = index,
+                    endIndex = endIndex
+                })
+
+                index = endIndex + 1
+            end
+        end
+    end
 end
+
 
 function ProductionDlgFrame:updateToggleButtonText()
 	if self.toggleButton ~= nil then
