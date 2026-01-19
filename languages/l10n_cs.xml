@@ -12,6 +12,11 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="Zobrazit typy plnění" />
         <text name="ui_productionDlg_btnShowFinances" text="Zobrazit finance" />
         <text name="ui_productionDlg_btnHideFinances" text="Skrýt finance" />
+        <text name="ui_productionDlg_btnShowLogistics" text="Zobrazit logistiku" />
+        <text name="ui_productionDlg_btnHideLogistics" text="Skrýt logistiku" />
+        <text name="ui_productionDlg_btnChangeOutput" text="Změnit výstup" />
+        <text name="ui_productionDlg_btnActivate" text="Aktivovat" />
+        <text name="ui_productionDlg_btnDeactivate" text="Deaktivovat" />
         <text name="ui_productionDlg_btnExportCSV" text="Exportovat CSV" />
         <text name="ui_productionDlg_hbName" text="Název" />
         <text name="ui_productionDlg_hbInputs" text="Vstupy" />
@@ -20,10 +25,19 @@
         <text name="ui_productionDlg_hbCapacity" text="Kapacita" />
         <text name="ui_productionDlg_hbIncome" text="Měsíční příjem" />
         <text name="ui_productionDlg_hbRecipes" text="Recepty" />
+        <text name="ui_productionDlg_hbRecipe" text="Recept" />
         <text name="ui_productionDlg_hbFinances" text="Finance" />
         <text name="ui_productionDlg_hbRevenue" text="Příjmy" />
         <text name="ui_productionDlg_hbCosts" text="Náklady" />
         <text name="ui_productionDlg_hbProfit" text="Čistý zisk" />
+        <text name="ui_productionDlg_hbCyclesPerMonth" text="Cyklů/Měs" />
+        <text name="ui_productionDlg_hbSupplyDuration" text="Doba dodávky" />
+        <text name="ui_productionDlg_hbOutputMode" text="Výstupní režim" />
+        <text name="ui_productionDlg_hbLocation" text="Umístění" />
+        <text name="ui_productionDlg_hbDestination" text="Cíl" />
+        <text name="ui_productionDlg_hbStatus" text="Stav" />
+        <text name="ui_production_status_active" text="Aktivní" />
+        <text name="ui_production_status_inactive" text="Neaktivní" />
         <text name="ui_productionDlg_totalIncome" text="Celkový příjem/měsíc:" />
         <text name="ui_productionDlg_noProductions" text="Nebyly nalezeny žádné produkce" />
         

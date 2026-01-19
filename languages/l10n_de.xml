@@ -12,6 +12,11 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="Füllarten anzeigen" />
         <text name="ui_productionDlg_btnShowFinances" text="Finanzen anzeigen" />
         <text name="ui_productionDlg_btnHideFinances" text="Finanzen ausblenden" />
+        <text name="ui_productionDlg_btnShowLogistics" text="Logistik anzeigen" />
+        <text name="ui_productionDlg_btnHideLogistics" text="Logistik ausblenden" />
+        <text name="ui_productionDlg_btnChangeOutput" text="Ausgabe ändern" />
+        <text name="ui_productionDlg_btnActivate" text="Aktivieren" />
+        <text name="ui_productionDlg_btnDeactivate" text="Deaktivieren" />
         <text name="ui_productionDlg_btnExportCSV" text="CSV exportieren" />
         <text name="ui_productionDlg_hbName" text="Name" />
         <text name="ui_productionDlg_hbInputs" text="Eingänge" />
@@ -20,10 +25,19 @@
         <text name="ui_productionDlg_hbCapacity" text="Kapazität" />
         <text name="ui_productionDlg_hbIncome" text="Monatliches Einkommen" />
         <text name="ui_productionDlg_hbRecipes" text="Rezepte" />
+        <text name="ui_productionDlg_hbRecipe" text="Rezept" />
         <text name="ui_productionDlg_hbFinances" text="Finanzen" />
         <text name="ui_productionDlg_hbRevenue" text="Einnahmen" />
         <text name="ui_productionDlg_hbCosts" text="Kosten" />
         <text name="ui_productionDlg_hbProfit" text="Nettogewinn" />
+        <text name="ui_productionDlg_hbCyclesPerMonth" text="Zyklen/Mo" />
+        <text name="ui_productionDlg_hbSupplyDuration" text="Vorratsdauer" />
+        <text name="ui_productionDlg_hbOutputMode" text="Ausgabemodus" />
+        <text name="ui_productionDlg_hbLocation" text="Standort" />
+        <text name="ui_productionDlg_hbDestination" text="Ziel" />
+        <text name="ui_productionDlg_hbStatus" text="Status" />
+        <text name="ui_production_status_active" text="Aktiv" />
+        <text name="ui_production_status_inactive" text="Inaktiv" />
         <text name="ui_productionDlg_totalIncome" text="Gesamteinkommen/Monat:" />
         <text name="ui_productionDlg_noProductions" text="Keine Produktionen gefunden" />
         

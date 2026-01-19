@@ -3,11 +3,14 @@ local DlgFrame_mt = Class(ProductionDlgFrame, MessageDialog)
 
 function ProductionDlgFrame.new(target, custom_mt)
 	local self = MessageDialog.new(target, custom_mt or DlgFrame_mt)
-    self.productions = {}
+	self.productions = {}
 	self.displayRows = {}
 	self.showInputs = true
 	self.showRecipes = false
 	self.showFinances = false
+	self.showLogistics = false
+	self.selectedLogisticsRow = nil
+	self.selectedRecipeRow = nil
 	return self
 end
 
@@ -40,13 +43,27 @@ function ProductionDlgFrame:onOpen()
 		self.financesButton:setInputAction(InputAction.MENU_PAGE_PREV)
 	end
 	
+	if self.logisticsButton ~= nil then
+		self.logisticsButton:setInputAction(InputAction.MENU_PAGE_NEXT)
+	end
+	
+	if self.changeOutputButton ~= nil then
+		self.changeOutputButton:setInputAction(InputAction.MENU_ACCEPT)
+		self.changeOutputButton:setVisible(false)
+	end
+	
+	if self.toggleRecipeButton ~= nil then
+		self.toggleRecipeButton:setInputAction(InputAction.MENU_CANCEL)
+		self.toggleRecipeButton:setVisible(false)
+	end
+	
 	if self.exportButton ~= nil then
-		self.exportButton:setInputAction(InputAction.MENU_PAGE_NEXT)
+		self.exportButton:setInputAction(InputAction.MENU_ACTIVATE)
 	end
 
 	self:setSoundSuppressed(true)
-    FocusManager:setFocus(self.overviewTable)
-    self:setSoundSuppressed(false)
+	FocusManager:setFocus(self.overviewTable)
+	self:setSoundSuppressed(false)
 end
 
 function ProductionDlgFrame:onClickOk()
@@ -54,7 +71,6 @@ function ProductionDlgFrame:onClickOk()
 end
 
 function ProductionDlgFrame:inputEvent(action, value, eventUsed)
-
 	if eventUsed then
 		return eventUsed
 	end
@@ -64,24 +80,84 @@ function ProductionDlgFrame:inputEvent(action, value, eventUsed)
 	end
 	
 	if action == InputAction.MENU_EXTRA_1 then
-
 		self:onClickToggle()
 		return true
 	elseif action == InputAction.MENU_EXTRA_2 then
-
 		self:onClickRecipes()
 		return true
 	elseif action == InputAction.MENU_PAGE_PREV then
-
 		self:onClickFinances()
 		return true
 	elseif action == InputAction.MENU_PAGE_NEXT then
-
+		self:onClickLogistics()
+		return true
+	elseif action == InputAction.MENU_ACCEPT then
+		if self.showLogistics then
+			self:onClickChangeOutput()
+			return true
+		end
+	elseif action == InputAction.MENU_CANCEL then
+		if self.showRecipes then
+			self:onClickToggleRecipe()
+			return true
+		end
+	elseif action == InputAction.MENU_ACTIVATE then
 		self:onClickExportCSV()
 		return true
 	end
 
 	return ProductionDlgFrame:superClass().inputEvent(self, action, value, eventUsed)
+end
+
+function ProductionDlgFrame:getDistributionDestination(sourceProduction, fillType)
+	if sourceProduction == nil or fillType == nil then
+		return nil
+	end
+
+	if sourceProduction.outputFillTypeIdsAutoDeliver == nil or 
+	   sourceProduction.outputFillTypeIdsAutoDeliver[fillType] == nil then
+		return nil
+	end
+
+	local farmId = sourceProduction.ownerFarmId
+	if g_currentMission == nil or g_currentMission.productionChainManager == nil then
+		return nil
+	end
+
+	local farmTable = g_currentMission.productionChainManager.farmIds[farmId]
+	if farmTable == nil or farmTable.inputTypeToProductionPoints == nil then
+		return nil
+	end
+
+	local prodPointsInDemand = farmTable.inputTypeToProductionPoints[fillType] or {}
+	
+	for i = 1, #prodPointsInDemand do
+		local prodPointInDemand = prodPointsInDemand[i]
+		
+		if prodPointInDemand ~= sourceProduction then
+			local filltypeRequired = false
+			if prodPointInDemand.activeProductions ~= nil then
+				for j = 1, #prodPointInDemand.activeProductions do
+					local activeProduction = prodPointInDemand.activeProductions[j]
+					if activeProduction.inputs ~= nil then
+						for k = 1, #activeProduction.inputs do
+							if activeProduction.inputs[k].type == fillType then
+								filltypeRequired = true
+								break
+							end
+						end
+					end
+					if filltypeRequired then break end
+				end
+			end
+			
+			if filltypeRequired and prodPointInDemand.getName ~= nil then
+				return prodPointInDemand:getName()
+			end
+		end
+	end
+
+	return nil
 end
 
 function ProductionDlgFrame:loadProductionData()
@@ -108,7 +184,6 @@ function ProductionDlgFrame:loadProductionData()
 		
 					local modeIndicator = ""
 					if productionPoint.sharedThroughputCapacity ~= nil then
-			
 						modeIndicator = productionPoint.sharedThroughputCapacity and " (S)" or " (P)"
 					end
 					
@@ -117,6 +192,7 @@ function ProductionDlgFrame:loadProductionData()
 						inputFillTypes = {},
 						outputFillTypes = {},
 						recipes = {},
+						logistics = {},
 						monthlyIncome = 0,
 						monthlyCosts = 0,
 						monthlyRevenue = 0,
@@ -159,9 +235,26 @@ function ProductionDlgFrame:loadProductionData()
 										hudOverlayFilename = fillType.hudOverlayFilename
 									}
 
-									if inputFillTypeIndices[fillTypeIndex] then
+									local isInput = inputFillTypeIndices[fillTypeIndex]
+									local isOutput = outputFillTypeIndices[fillTypeIndex]
+									
+									-- If it's an output (or both), always show on outputs page
+									if isOutput then
+										table.insert(prodData.outputFillTypes, data)
+									end
+									
+									-- If it's ONLY an input (not an output), show on inputs page
+									if isInput and not isOutput then
 										table.insert(prodData.inputFillTypes, data)
-									else
+									end
+									
+									-- If it's BOTH input and output, also show on inputs page
+									if isInput and isOutput then
+										table.insert(prodData.inputFillTypes, data)
+									end
+									
+									-- If neither input nor output (shouldn't happen), add to outputs
+									if not isInput and not isOutput then
 										table.insert(prodData.outputFillTypes, data)
 									end
 								end
@@ -172,19 +265,149 @@ function ProductionDlgFrame:loadProductionData()
 					table.sort(prodData.inputFillTypes, function(a, b) return a.title < b.title end)
 					table.sort(prodData.outputFillTypes, function(a, b) return a.title < b.title end)
 
-			
 					if productionPoint.productions ~= nil then
+						local daysPerMonth = g_currentMission.missionInfo.plannedDaysPerPeriod or 1
+						local hoursPerDay = 24
+						
+						local totalConsumptionRates = {}
+						
 						for _, production in pairs(productionPoint.productions) do
-				
+							if production.status == ProductionPoint.PROD_STATUS.RUNNING then
+								local cyclesPerHour = production.cyclesPerHour or 0
+								
+								if production.inputs ~= nil then
+									for _, input in pairs(production.inputs) do
+										local fillTypeIndex = input.type
+										local consumptionPerCycle = input.amount or 0
+										local consumptionPerHour = consumptionPerCycle * cyclesPerHour
+										
+										if totalConsumptionRates[fillTypeIndex] == nil then
+											totalConsumptionRates[fillTypeIndex] = 0
+										end
+										totalConsumptionRates[fillTypeIndex] = totalConsumptionRates[fillTypeIndex] + consumptionPerHour
+									end
+								end
+							end
+						end
+						
+						for _, production in pairs(productionPoint.productions) do
 							local cleanName = production.name or "Unknown Recipe"
-							cleanName = cleanName:gsub("%s*%b()%s*", "")  
+							cleanName = cleanName:gsub("%s*%b()%s*", "")
+							
+							local outputFillTypeInfo = nil
+							if production.outputs and #production.outputs > 0 then
+								local outputType = production.outputs[1].type
+								if outputType then
+									local outputFillType = g_fillTypeManager:getFillTypeByIndex(outputType)
+									if outputFillType then
+										outputFillTypeInfo = {
+											type = outputType,
+											title = outputFillType.title,
+											hudOverlayFilename = outputFillType.hudOverlayFilename
+										}
+									end
+								end
+							end
 							
 							table.insert(prodData.recipes, {
 								name = cleanName,
 								isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING,
 								status = production.status,
 								inputs = production.inputs or {},
-								outputs = production.outputs or {}
+								outputs = production.outputs or {},
+								outputFillTypeInfo = outputFillTypeInfo,
+								production = production
+							})
+							
+							-- Now process logistics for ALL recipes, not just running ones
+							local cyclesPerMonth = production.cyclesPerMonth or 0
+							
+							local supplyDuration = "N/A"
+							local outputMode = "Storing"
+							local destination = "N/A"
+							local destinationColor = {1, 0, 0, 1}
+							
+							-- Only calculate supply duration if recipe is active
+							if production.status == ProductionPoint.PROD_STATUS.RUNNING then
+								if production.inputs ~= nil and #production.inputs > 0 then
+									local minDuration = math.huge
+									
+									for _, input in pairs(production.inputs) do
+										local fillTypeIndex = input.type
+										local fillLevel = productionPoint.storage:getFillLevel(fillTypeIndex)
+										local totalConsumptionPerHour = totalConsumptionRates[fillTypeIndex] or 0
+										
+										if totalConsumptionPerHour > 0 then
+											local hoursUntilEmpty = fillLevel / totalConsumptionPerHour
+											if hoursUntilEmpty < minDuration then
+												minDuration = hoursUntilEmpty
+											end
+										end
+									end
+									
+									if minDuration ~= math.huge then
+										local gameDaysUntilEmpty = minDuration / hoursPerDay
+										
+										if gameDaysUntilEmpty < 1 then
+											supplyDuration = string.format("%.1fh", minDuration)
+										elseif gameDaysUntilEmpty < 30 then
+											supplyDuration = string.format("%.1fd", gameDaysUntilEmpty)
+										else
+											local monthsUntilEmpty = gameDaysUntilEmpty / daysPerMonth
+											supplyDuration = string.format("%.1fm", monthsUntilEmpty)
+										end
+									end
+								end
+								
+								-- Only check output mode if recipe is active
+								if production.outputs ~= nil and #production.outputs > 0 then
+									local output = production.outputs[1]
+									local fillType = output.type
+									
+									if productionPoint.getOutputDistributionMode then
+										local mode = productionPoint:getOutputDistributionMode(fillType)
+										if mode == ProductionPoint.OUTPUT_MODE.DIRECT_SELL then
+											outputMode = "Selling"
+										elseif mode == ProductionPoint.OUTPUT_MODE.AUTO_DELIVER then
+											outputMode = "Distributing"
+											
+											local destName = self:getDistributionDestination(productionPoint, fillType)
+											if destName then
+												destination = destName
+												destinationColor = {1, 1, 1, 1}
+											else
+												destination = "Not Set"
+												destinationColor = {1, 0.5, 0, 1}
+											end
+										end
+									end
+									
+									if outputMode ~= "Distributing" then
+										local fillLevel = productionPoint.storage:getFillLevel(fillType)
+										local capacity = productionPoint.storage:getCapacity(fillType)
+										if fillLevel > capacity * 0.9 then
+											destination = "Full"
+											destinationColor = {1, 0, 0, 1}
+										end
+									end
+								end
+							else
+								-- For inactive recipes, show "Inactive" status
+								supplyDuration = "-"
+								outputMode = "-"
+								destination = "-"
+								destinationColor = {0.5, 0.5, 0.5, 1}
+							end
+							
+							table.insert(prodData.logistics, {
+								recipe = cleanName,
+								cyclesPerMonth = cyclesPerMonth,
+								supplyDuration = supplyDuration,
+								outputMode = outputMode,
+								destination = destination,
+								destinationColor = destinationColor,
+								outputFillTypeInfo = outputFillTypeInfo,
+								isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING
 							})
 						end
 					end
@@ -237,43 +460,63 @@ function ProductionDlgFrame:loadProductionData()
 	self.overviewTable:reloadData()
 end
 
-
 function ProductionDlgFrame:buildDisplayRows()
-    self.displayRows = {}
+	self.displayRows = {}
 
-    for _, prod in ipairs(self.productions) do
-        if self.showFinances then
-            table.insert(self.displayRows, {
-                production = prod,
-                rowType = "finance",
-                fillTypes = {},
-                startIndex = 1,
-                endIndex = 0
-            })
-        else
-            local fillTypes = self.showInputs and prod.inputFillTypes or prod.outputFillTypes
-            if self.showRecipes then
-                fillTypes = prod.recipes
-            end
+	for _, prod in ipairs(self.productions) do
+		if self.showLogistics then
+			if #prod.logistics > 0 then
+				for i, logistic in ipairs(prod.logistics) do
+					table.insert(self.displayRows, {
+						production = prod,
+						rowType = "logistics",
+						logistic = logistic,
+						isFirst = (i == 1)
+					})
+				end
+			else
+				table.insert(self.displayRows, {
+					production = prod,
+					rowType = "logistics_empty",
+					isFirst = true
+				})
+			end
+			
+			table.insert(self.displayRows, {
+				production = prod,
+				rowType = "logistics_gap"
+			})
+		elseif self.showFinances then
+			table.insert(self.displayRows, {
+				production = prod,
+				rowType = "finance",
+				fillTypes = {},
+				startIndex = 1,
+				endIndex = 0
+			})
+		else
+			local fillTypes = self.showInputs and prod.inputFillTypes or prod.outputFillTypes
+			if self.showRecipes then
+				fillTypes = prod.recipes
+			end
 
-            local index = 1
-            while index <= #fillTypes do
-                local endIndex = math.min(index + 4, #fillTypes)
+			local index = 1
+			while index <= #fillTypes do
+				local endIndex = math.min(index + 4, #fillTypes)
 
-                table.insert(self.displayRows, {
-                    production = prod,
-                    rowType = index == 1 and "row1" or "rowN",
-                    fillTypes = fillTypes,
-                    startIndex = index,
-                    endIndex = endIndex
-                })
+				table.insert(self.displayRows, {
+					production = prod,
+					rowType = index == 1 and "row1" or "rowN",
+					fillTypes = fillTypes,
+					startIndex = index,
+					endIndex = endIndex
+				})
 
-                index = endIndex + 1
-            end
-        end
-    end
+				index = endIndex + 1
+			end
+		end
+	end
 end
-
 
 function ProductionDlgFrame:updateToggleButtonText()
 	if self.toggleButton ~= nil then
@@ -303,6 +546,204 @@ function ProductionDlgFrame:updateRecipeButtonText()
 	end
 end
 
+function ProductionDlgFrame:onClickToggleRecipe()
+    if self.selectedRecipeRow == nil then
+        return
+    end
+
+    local recipeInfo = self.selectedRecipeRow.recipe
+    if recipeInfo == nil or recipeInfo.production == nil then
+        return
+    end
+
+    local production = recipeInfo.production
+    local prodPoint = self.selectedRecipeRow.production.productionPoint
+    
+    if prodPoint == nil then
+        return
+    end
+
+    local productionId = nil
+    for id, prod in pairs(prodPoint.productions) do
+        if prod == production then
+            productionId = id
+            break
+        end
+    end
+    
+    if productionId == nil then
+        Logging.warning("Could not find production ID")
+        return
+    end
+
+    local isActive = production.status == ProductionPoint.PROD_STATUS.RUNNING or production.status == ProductionPoint.PROD_STATUS.MISSING_INPUTS
+
+    if isActive then
+
+        if prodPoint.setProductionState then
+            prodPoint:setProductionState(productionId, false)
+        end
+
+        production.status = ProductionPoint.PROD_STATUS.INACTIVE
+
+        if prodPoint.activeProductions then
+            for i = #prodPoint.activeProductions, 1, -1 do
+                if prodPoint.activeProductions[i] == production then
+                    table.remove(prodPoint.activeProductions, i)
+                end
+            end
+        end
+    else
+     
+        if prodPoint.setProductionState then
+            prodPoint:setProductionState(productionId, true)
+        end
+        
+        production.status = ProductionPoint.PROD_STATUS.RUNNING
+        
+        if prodPoint.activeProductions and not table.hasElement(prodPoint.activeProductions, production) then
+            table.insert(prodPoint.activeProductions, production)
+        end
+    end
+
+    if g_server ~= nil then
+     
+        if ProductionPointProductionStateEvent then
+            g_server:broadcastEvent(ProductionPointProductionStateEvent.new(prodPoint, productionId, not isActive))
+        elseif ProductionPointProductionStatusEvent then
+            g_server:broadcastEvent(ProductionPointProductionStatusEvent.new(prodPoint, productionId, not isActive and ProductionPoint.PROD_STATUS.RUNNING or ProductionPoint.PROD_STATUS.INACTIVE))
+        end
+    else
+        if ProductionPointProductionStateEvent then
+            g_client:getServerConnection():sendEvent(ProductionPointProductionStateEvent.new(prodPoint, productionId, not isActive))
+        elseif ProductionPointProductionStatusEvent then
+            g_client:getServerConnection():sendEvent(ProductionPointProductionStatusEvent.new(prodPoint, productionId, not isActive and ProductionPoint.PROD_STATUS.RUNNING or ProductionPoint.PROD_STATUS.INACTIVE))
+        end
+    end
+
+    local idx = self.overviewTable:getSelectedIndexInSection()
+    
+    self:setSoundSuppressed(true)
+    
+    self:loadProductionData()
+    self:buildDisplayRows()
+    self.overviewTable:reloadData()
+    
+    -- Restore selection
+    if idx then
+        self.overviewTable:setSelectedIndex(idx)
+        self.selectedRecipeRow = nil
+        self:onListSelectionChanged(self.overviewTable, 1, idx)
+    end
+    
+    self:setSoundSuppressed(false)
+end
+
+function ProductionDlgFrame:onClickChangeOutput()
+	if not self.selectedLogisticsRow then
+		return
+	end
+	
+	local row = self.selectedLogisticsRow
+	local productionPoint = row.production.productionPoint
+	local logistic = row.logistic
+	
+	local fillType = nil
+	local production = nil
+	for _, prod in pairs(productionPoint.productions) do
+		if prod.name and prod.name:gsub("%s*%b()%s*", "") == logistic.recipe then
+			if prod.outputs and #prod.outputs > 0 then
+				fillType = prod.outputs[1].type
+				production = prod
+				break
+			end
+		end
+	end
+	
+	if fillType == nil or production == nil then
+		InfoDialog.show("Cannot find output fill type for this recipe")
+		return
+	end
+	
+	local currentMode = productionPoint:getOutputDistributionMode(fillType)
+	
+	local newMode
+	if currentMode == 0 then
+		newMode = ProductionPoint.OUTPUT_MODE.AUTO_DELIVER
+	elseif currentMode == ProductionPoint.OUTPUT_MODE.AUTO_DELIVER then
+		newMode = ProductionPoint.OUTPUT_MODE.DIRECT_SELL
+	else
+		newMode = 0
+	end
+	
+	productionPoint:setOutputDistributionMode(fillType, newMode, true)
+	
+	if g_server ~= nil then
+		g_server:broadcastEvent(ProductionPointOutputModeEvent.new(productionPoint, fillType, newMode))
+	else
+		g_client:getServerConnection():sendEvent(ProductionPointOutputModeEvent.new(productionPoint, fillType, newMode))
+	end
+	
+	local currentIndex = self.overviewTable:getSelectedIndexInSection()
+	self:loadProductionData()
+	
+	if currentIndex and currentIndex > 0 and currentIndex <= #self.displayRows then
+		self:setSoundSuppressed(true)
+		self.overviewTable:setSelectedIndex(currentIndex)
+		self:setSoundSuppressed(false)
+		
+		local row = self.displayRows[currentIndex]
+		if row and row.rowType == "logistics" then
+			self.selectedLogisticsRow = row
+			if self.changeOutputButton ~= nil then
+				self.changeOutputButton:setVisible(true)
+			end
+		end
+	end
+end
+
+function ProductionDlgFrame:onClickLogistics()
+	self.showLogistics = not self.showLogistics
+	self.selectedLogisticsRow = nil
+	
+	if self.logisticsButton ~= nil then
+		if self.showLogistics then
+			self.logisticsButton:setText(g_i18n:getText("ui_productionDlg_btnHideLogistics"))
+		else
+			self.logisticsButton:setText(g_i18n:getText("ui_productionDlg_btnShowLogistics"))
+		end
+	end
+	
+	if self.toggleButton ~= nil then
+		self.toggleButton:setVisible(not self.showLogistics)
+	end
+	if self.recipeButton ~= nil then
+		self.recipeButton:setVisible(not self.showLogistics)
+	end
+	if self.financesButton ~= nil then
+		self.financesButton:setVisible(not self.showLogistics)
+	end
+	if self.changeOutputButton ~= nil then
+		self.changeOutputButton:setVisible(false)
+	end
+	if self.toggleRecipeButton ~= nil then
+		self.toggleRecipeButton:setVisible(false)
+	end
+	
+	if self.tableHeaderBox ~= nil then
+		self.tableHeaderBox:setVisible(not self.showLogistics)
+	end
+	if self.financeHeaderBox ~= nil then
+		self.financeHeaderBox:setVisible(false)
+	end
+	if self.logisticsHeaderBox ~= nil then
+		self.logisticsHeaderBox:setVisible(self.showLogistics)
+	end
+	
+	self:buildDisplayRows()
+	self.overviewTable:reloadData()
+end
+
 function ProductionDlgFrame:onClickFinances()
 	self.showFinances = not self.showFinances
 	
@@ -319,6 +760,9 @@ function ProductionDlgFrame:onClickFinances()
 	end
 	if self.recipeButton ~= nil then
 		self.recipeButton:setVisible(not self.showFinances)
+	end
+	if self.toggleRecipeButton ~= nil then
+		self.toggleRecipeButton:setVisible(false)
 	end
 	
 	if self.tableHeaderBox ~= nil then
@@ -338,6 +782,10 @@ function ProductionDlgFrame:onClickRecipes()
 	
 	if self.toggleButton ~= nil then
 		self.toggleButton:setVisible(not self.showRecipes)
+	end
+	
+	if self.toggleRecipeButton ~= nil then
+		self.toggleRecipeButton:setVisible(false)
 	end
 	
 	if self.fillTypeHeader ~= nil then
@@ -360,7 +808,6 @@ function ProductionDlgFrame:onClickToggle()
 end
 
 function ProductionDlgFrame:onClickExportCSV()
-
 	if #self.productions == 0 then
 		InfoDialog.show("No production data to export")
 		return
@@ -368,30 +815,20 @@ function ProductionDlgFrame:onClickExportCSV()
 	
 	local env = g_currentMission.environment
 	local savegameName = g_currentMission.missionInfo.savegameDirectory or "Unknown"
-	
 	savegameName = savegameName:match("([^/\\]+)$") or savegameName
-	
 	savegameName = savegameName:gsub("savegame(%d)$", "savegame0%1")
 	
 	local year = env.currentYear or 1
-	
 	local period = env.currentPeriod or 1
 	local monthMap = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2}
 	local monthNumber = monthMap[period] or 1
-	
 	local dayNumber = env.currentDayInPeriod or 1
 	
-	local filename = string.format(
-		"ProductionExport_%s_Y%02d_M%02d_D%02d.csv",
-		savegameName,
-		year,
-		monthNumber,
-		dayNumber
-	)
+	local filename = string.format("ProductionExport_%s_Y%02d_M%02d_D%02d.csv",
+		savegameName, year, monthNumber, dayNumber)
 
 	local modsDir = getUserProfileAppPath() .. "modSettings"
 	local exportDir = modsDir .. "/FS25_NXProductionsDump"
-
 	createFolder(exportDir)
 	
 	local filepath = exportDir .. "/" .. filename
@@ -414,13 +851,11 @@ function ProductionDlgFrame:onClickExportCSV()
 	end
 
 	local currencySymbol = g_i18n:getCurrencySymbol(true)
-	
 	file:write("\239\187\191")
-
-	file:write(string.format('"Production Name","Status","Type","Fill Type","Amount (L)","Capacity (L)","Fill %%","Daily Upkeep (%s)","Monthly Revenue (%s)","Monthly Costs (%s)","Net Profit (%s)"\n', currencySymbol, currencySymbol, currencySymbol, currencySymbol))
+	file:write(string.format('"Production Name","Status","Type","Fill Type","Amount (L)","Capacity (L)","Fill %%","Daily Upkeep (%s)","Monthly Revenue (%s)","Monthly Costs (%s)","Net Profit (%s)"\n',
+		currencySymbol, currencySymbol, currencySymbol, currencySymbol))
 
 	for _, prod in ipairs(self.productions) do
-
 		local activeCount = 0
 		local totalCount = #prod.recipes
 		for _, recipe in ipairs(prod.recipes) do
@@ -432,40 +867,24 @@ function ProductionDlgFrame:onClickExportCSV()
 
 		for _, fillType in ipairs(prod.inputFillTypes) do
 			file:write(string.format('"%s","%s","Input","%s","%d","%d","%.2f","","","",""\n',
-				prod.name or "",
-				statusText,
-				fillType.title or "",
-				math.floor(fillType.liters),
-				math.floor(fillType.capacity),
-				fillType.fillPercent
-			))
+				prod.name or "", statusText, fillType.title or "",
+				math.floor(fillType.liters), math.floor(fillType.capacity), fillType.fillPercent))
 		end
 
 		for _, fillType in ipairs(prod.outputFillTypes) do
 			file:write(string.format('"%s","%s","Output","%s","%d","%d","%.2f","","","",""\n',
-				prod.name or "",
-				statusText,
-				fillType.title or "",
-				math.floor(fillType.liters),
-				math.floor(fillType.capacity),
-				fillType.fillPercent
-			))
+				prod.name or "", statusText, fillType.title or "",
+				math.floor(fillType.liters), math.floor(fillType.capacity), fillType.fillPercent))
 		end
 
 		file:write(string.format('"%s","%s","Finance Summary","","","","","%.2f","%d","%d","%d"\n',
-			prod.name or "",
-			statusText,
-			prod.dailyUpkeep,
-			math.floor(prod.monthlyRevenue),
-			math.floor(prod.monthlyCosts),
-			math.floor(prod.monthlyIncome)
-		))
+			prod.name or "", statusText, prod.dailyUpkeep,
+			math.floor(prod.monthlyRevenue), math.floor(prod.monthlyCosts), math.floor(prod.monthlyIncome)))
 
 		file:write("\n")
 	end
 
 	file:close()
-	
 	InfoDialog.show(string.format("Export Successful!\n\nExported to:\n%s", filename))
 end
 
@@ -477,18 +896,205 @@ function ProductionDlgFrame:getNumberOfItemsInSection(list, section)
 	end
 end
 
+function ProductionDlgFrame:onListSelectionChanged(list, section, index)
+	if list == self.overviewTable then
+		if self.showLogistics then
+			local row = self.displayRows[index]
+			if row and row.rowType == "logistics" then
+				self.selectedLogisticsRow = row
+				
+				if self.changeOutputButton ~= nil then
+					self.changeOutputButton:setVisible(true)
+				end
+				
+				if self.toggleRecipeButton ~= nil then
+					local productionPoint = row.production.productionPoint
+					local recipeName = row.logistic.recipe
+					local recipeProduction = nil
+					
+					for _, prod in pairs(productionPoint.productions) do
+						if prod.name and prod.name:gsub("%s*%b()%s*", "") == recipeName then
+							recipeProduction = prod
+							Logging.info("ProductionDlgFrame: Selection changed - Recipe '%s' has status: %s", recipeName, tostring(recipeProduction.status))
+							break
+						end
+					end
+					
+					if recipeProduction then
+						self.selectedRecipeRow = {
+							production = row.production,
+							recipe = {
+								production = recipeProduction,
+								isActive = recipeProduction.status == ProductionPoint.PROD_STATUS.RUNNING or recipeProduction.status == ProductionPoint.PROD_STATUS.MISSING_INPUTS
+							}
+						}
+						
+						if recipeProduction.status == ProductionPoint.PROD_STATUS.RUNNING or recipeProduction.status == ProductionPoint.PROD_STATUS.MISSING_INPUTS then
+							self.toggleRecipeButton:setText(g_i18n:getText("ui_productionDlg_btnDeactivate"))
+						else
+							self.toggleRecipeButton:setText(g_i18n:getText("ui_productionDlg_btnActivate"))
+						end
+						self.toggleRecipeButton:setVisible(true)
+					else
+						self.selectedRecipeRow = nil
+						self.toggleRecipeButton:setVisible(false)
+					end
+				end
+			else
+				self.selectedLogisticsRow = nil
+				self.selectedRecipeRow = nil
+				if self.changeOutputButton ~= nil then
+					self.changeOutputButton:setVisible(false)
+				end
+				if self.toggleRecipeButton ~= nil then
+					self.toggleRecipeButton:setVisible(false)
+				end
+			end
+		else
+			self.selectedRecipeRow = nil
+			self.selectedLogisticsRow = nil
+			if self.toggleRecipeButton ~= nil then
+				self.toggleRecipeButton:setVisible(false)
+			end
+			if self.changeOutputButton ~= nil then
+				self.changeOutputButton:setVisible(false)
+			end
+		end
+	end
+end
+
 function ProductionDlgFrame:populateCellForItemInSection(list, section, index, cell)
-    if list == self.overviewTable then
+	if list == self.overviewTable then
 		local row = self.displayRows[index]
-		
 		if row == nil then
 			return
 		end
 
 		local prod = row.production
-		local fillTypes = row.fillTypes
-
 		local currencySymbol = g_i18n:getCurrencySymbol(true)
+
+		if row.rowType == "logistics_gap" then
+			cell:getAttribute("productionName"):setText("")
+			cell:getAttribute("productionName"):setVisible(false)
+			cell:getAttribute("statusText"):setVisible(false)
+			
+			for i = 1, 10 do
+				cell:getAttribute("fillIcon" .. i):setVisible(false)
+				cell:getAttribute("fillCapacity" .. i):setVisible(false)
+			end
+			return
+		end
+
+		if row.rowType == "logistics" or row.rowType == "logistics_empty" then
+			if row.isFirst then
+				cell:getAttribute("productionName"):setText(prod.name)
+				cell:getAttribute("productionName"):setVisible(true)
+			else
+				cell:getAttribute("productionName"):setText("")
+				cell:getAttribute("productionName"):setVisible(false)
+			end
+			
+			if row.rowType == "logistics_empty" then
+				cell:getAttribute("statusText"):setVisible(false)
+				
+				cell:getAttribute("fillIcon1"):setVisible(false)
+				cell:getAttribute("fillCapacity1"):setText("No Active Recipes")
+				cell:getAttribute("fillCapacity1"):setTextColor(1, 0.5, 0, 1)
+				cell:getAttribute("fillCapacity1"):setVisible(true)
+				
+				for i = 2, 10 do
+					cell:getAttribute("fillIcon" .. i):setVisible(false)
+					cell:getAttribute("fillCapacity" .. i):setVisible(false)
+				end
+			else
+				local logistic = row.logistic
+				
+				-- Determine recipe status
+				local recipeStatus = g_i18n:getText("ui_production_status_inactive")
+				local statusColor = {1, 0, 0, 1} -- Red for inactive
+				
+				local productionPoint = prod.productionPoint
+				if productionPoint and productionPoint.productions then
+					for _, production in pairs(productionPoint.productions) do
+						if production.name and production.name:gsub("%s*%b()%s*", "") == logistic.recipe then
+							if production.status == ProductionPoint.PROD_STATUS.RUNNING then
+								recipeStatus = g_i18n:getText("ui_production_status_active")
+								statusColor = {0, 1, 0, 1} -- Green for active
+							elseif production.status == ProductionPoint.PROD_STATUS.MISSING_INPUTS then
+								recipeStatus = g_i18n:getText("ui_production_status_active") .. "(!)"
+								statusColor = {1, 0.6, 0, 1} -- Orange for missing inputs
+							end
+							break
+						end
+					end
+				end
+				
+				-- Status column
+				cell:getAttribute("statusText"):setText(recipeStatus)
+				cell:getAttribute("statusText"):setTextColor(statusColor[1], statusColor[2], statusColor[3], statusColor[4])
+				cell:getAttribute("statusText"):setVisible(true)
+				
+				-- Recipe name with icon
+				if logistic.outputFillTypeInfo and logistic.outputFillTypeInfo.hudOverlayFilename and logistic.outputFillTypeInfo.hudOverlayFilename ~= "" then
+					cell:getAttribute("fillIcon1"):setImageFilename(logistic.outputFillTypeInfo.hudOverlayFilename)
+					cell:getAttribute("fillIcon1"):setVisible(true)
+				else
+					cell:getAttribute("fillIcon1"):setVisible(false)
+				end
+				cell:getAttribute("fillCapacity1"):setText(logistic.recipe)
+				cell:getAttribute("fillCapacity1"):setTextColor(1, 1, 1, 1)
+				cell:getAttribute("fillCapacity1"):setVisible(true)
+				
+				-- Cycles per month
+				cell:getAttribute("fillIcon2"):setVisible(false)
+				cell:getAttribute("fillCapacity2"):setText(string.format("%.0f", logistic.cyclesPerMonth))
+				cell:getAttribute("fillCapacity2"):setTextColor(1, 1, 1, 1)
+				cell:getAttribute("fillCapacity2"):setVisible(true)
+				
+				-- Supply duration
+				cell:getAttribute("fillIcon3"):setVisible(false)
+				cell:getAttribute("fillCapacity3"):setText(logistic.supplyDuration)
+				local durColor = {1, 1, 1, 1}
+				if logistic.supplyDuration:match("h$") then
+					local hours = tonumber(logistic.supplyDuration:match("([%d%.]+)"))
+					if hours and hours < 12 then
+						durColor = {1, 0, 0, 1}
+					elseif hours and hours < 24 then
+						durColor = {1, 0.5, 0, 1}
+					end
+				end
+				cell:getAttribute("fillCapacity3"):setTextColor(durColor[1], durColor[2], durColor[3], durColor[4])
+				cell:getAttribute("fillCapacity3"):setVisible(true)
+				
+				-- Output mode
+				cell:getAttribute("fillIcon4"):setVisible(false)
+				cell:getAttribute("fillCapacity4"):setText(logistic.outputMode)
+				local modeColor = {1, 1, 1, 1}
+				if logistic.outputMode == "Selling" then
+					modeColor = {0, 1, 0, 1}
+				elseif logistic.outputMode == "Distributing" then
+					modeColor = {0.3, 0.7, 1, 1}
+				end
+				cell:getAttribute("fillCapacity4"):setTextColor(modeColor[1], modeColor[2], modeColor[3], modeColor[4])
+				cell:getAttribute("fillCapacity4"):setVisible(true)
+				
+				-- Destination
+				cell:getAttribute("fillIcon5"):setVisible(false)
+				cell:getAttribute("fillCapacity5"):setText(logistic.destination)
+				local destColor = logistic.destinationColor or {1, 1, 1, 1}
+				cell:getAttribute("fillCapacity5"):setTextColor(destColor[1], destColor[2], destColor[3], destColor[4])
+				cell:getAttribute("fillCapacity5"):setVisible(true)
+				
+				for i = 6, 10 do
+					cell:getAttribute("fillIcon" .. i):setVisible(false)
+					cell:getAttribute("fillCapacity" .. i):setVisible(false)
+				end
+			end
+			return
+		end
+
+		-- Hide status text for non-logistics views
+		cell:getAttribute("statusText"):setVisible(false)
 
 		if row.rowType == "finance" then
 			cell:getAttribute("productionName"):setText(prod.name)
@@ -500,20 +1106,20 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			
 			cell:getAttribute("fillIcon1"):setVisible(false)
 			cell:getAttribute("fillCapacity1"):setText(revenueText)
-			cell:getAttribute("fillCapacity1"):setTextColor(1, 1, 1, 1)  
+			cell:getAttribute("fillCapacity1"):setTextColor(1, 1, 1, 1)
 			cell:getAttribute("fillCapacity1"):setVisible(true)
 			
 			cell:getAttribute("fillIcon2"):setVisible(false)
 			cell:getAttribute("fillCapacity2"):setText(costsText)
-			cell:getAttribute("fillCapacity2"):setTextColor(1, 0, 0, 1)  
+			cell:getAttribute("fillCapacity2"):setTextColor(1, 0, 0, 1)
 			cell:getAttribute("fillCapacity2"):setVisible(true)
 			
 			cell:getAttribute("fillIcon3"):setVisible(false)
 			cell:getAttribute("fillCapacity3"):setText(profitText)
 			if prod.monthlyIncome >= 0 then
-				cell:getAttribute("fillCapacity3"):setTextColor(0, 1, 0, 1)  
+				cell:getAttribute("fillCapacity3"):setTextColor(0, 1, 0, 1)
 			else
-				cell:getAttribute("fillCapacity3"):setTextColor(1, 0, 0, 1)  
+				cell:getAttribute("fillCapacity3"):setTextColor(1, 0, 0, 1)
 			end
 			cell:getAttribute("fillCapacity3"):setVisible(true)
 			
@@ -521,10 +1127,10 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 				cell:getAttribute("fillIcon" .. i):setVisible(false)
 				cell:getAttribute("fillCapacity" .. i):setVisible(false)
 			end
-			
 			return
 		end
 
+		local fillTypes = row.fillTypes
 
 		if row.rowType == "row1" then
 			cell:getAttribute("productionName"):setText(prod.name)
@@ -534,7 +1140,6 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			cell:getAttribute("productionName"):setVisible(false)
 		end
 
-
 		for i = 1, 5 do
 			local fillIcon = cell:getAttribute("fillIcon" .. i)
 			local fillCapacity = cell:getAttribute("fillCapacity" .. i)
@@ -542,20 +1147,10 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 
 			if dataIndex <= #fillTypes then
 				local fillType = fillTypes[dataIndex]
-				
 				fillCapacity:setTextColor(1, 1, 1, 1)
 				
 				if self.showRecipes then
-					local iconFilename = nil
-					if fillType.outputs and #fillType.outputs > 0 then
-						local outputType = fillType.outputs[1].type
-						if outputType then
-							local outputFillType = g_fillTypeManager:getFillTypeByIndex(outputType)
-							if outputFillType then
-								iconFilename = outputFillType.hudOverlayFilename
-							end
-						end
-					end
+					local iconFilename = fillType.outputFillTypeInfo and fillType.outputFillTypeInfo.hudOverlayFilename or nil
 					
 					if iconFilename and iconFilename ~= "" then
 						fillIcon:setImageFilename(iconFilename)
@@ -564,18 +1159,11 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 						fillIcon:setVisible(false)
 					end
 					
-					local statusText
-					if fillType.status == ProductionPoint.PROD_STATUS.RUNNING then
-						statusText = "(Active)"
-					else
-						statusText = "(Inactive)"
-					end
-					
+					local statusText = fillType.status == ProductionPoint.PROD_STATUS.RUNNING and "(Active)" or "(Inactive)"
 					local recipeText = string.format("%s %s", fillType.name, statusText)
 					fillCapacity:setText(recipeText)
 					fillCapacity:setVisible(true)
 				else
-				
 					if fillType.hudOverlayFilename ~= nil and fillType.hudOverlayFilename ~= "" then
 						fillIcon:setImageFilename(fillType.hudOverlayFilename)
 						fillIcon:setVisible(true)
@@ -595,7 +1183,7 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 			end
 		end
 		
-		if not self.showFinances then
+		if not self.showFinances and not self.showLogistics then
 			for i = 6, 10 do
 				local fillIcon = cell:getAttribute("fillIcon" .. i)
 				local fillCapacity = cell:getAttribute("fillCapacity" .. i)
@@ -603,21 +1191,10 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 
 				if dataIndex <= #fillTypes and row.rowType == "row2" then
 					local fillType = fillTypes[dataIndex]
-		
 					fillCapacity:setTextColor(1, 1, 1, 1)
 					
 					if self.showRecipes then
-					
-						local iconFilename = nil
-						if fillType.outputs and #fillType.outputs > 0 then
-							local outputType = fillType.outputs[1].type
-							if outputType then
-								local outputFillType = g_fillTypeManager:getFillTypeByIndex(outputType)
-								if outputFillType then
-									iconFilename = outputFillType.hudOverlayFilename
-								end
-							end
-						end
+						local iconFilename = fillType.outputFillTypeInfo and fillType.outputFillTypeInfo.hudOverlayFilename or nil
 						
 						if iconFilename and iconFilename ~= "" then
 							fillIcon:setImageFilename(iconFilename)
@@ -626,13 +1203,7 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 							fillIcon:setVisible(false)
 						end
 						
-						local statusText
-						if fillType.status == ProductionPoint.PROD_STATUS.RUNNING then
-							statusText = "(Active)"
-						else
-							statusText = "(Inactive)"
-						end
-						
+						local statusText = fillType.status == ProductionPoint.PROD_STATUS.RUNNING and "(Active)" or "(Inactive)"
 						local recipeText = string.format("%s %s", fillType.name, statusText)
 						fillCapacity:setText(recipeText)
 						fillCapacity:setVisible(true)
@@ -656,19 +1227,23 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 				end
 			end
 		end
-    end
+	end
 end
 
 function ProductionDlgFrame:formatNumber(num)
-    local formatted = tostring(num)
-    local k
-    while true do  
-        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-        if k == 0 then
-            break
-        end
-    end
-    return formatted
+	local formatted = tostring(num)
+	local k
+	while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if k == 0 then
+			break
+		end
+	end
+	return formatted
+end
+
+function ProductionDlgFrame:update(dt)
+    ProductionDlgFrame:superClass().update(self, dt)
 end
 
 function ProductionDlgFrame:onClose()

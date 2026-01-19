@@ -12,6 +12,11 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="Vultypes tonen" />
         <text name="ui_productionDlg_btnShowFinances" text="Financiën tonen" />
         <text name="ui_productionDlg_btnHideFinances" text="Financiën verbergen" />
+        <text name="ui_productionDlg_btnShowLogistics" text="Logistiek tonen" />
+        <text name="ui_productionDlg_btnHideLogistics" text="Logistiek verbergen" />
+        <text name="ui_productionDlg_btnChangeOutput" text="Uitgang wijzigen" />
+        <text name="ui_productionDlg_btnActivate" text="Activeren" />
+        <text name="ui_productionDlg_btnDeactivate" text="Deactiveren" />
         <text name="ui_productionDlg_btnExportCSV" text="CSV exporteren" />
         <text name="ui_productionDlg_hbName" text="Naam" />
         <text name="ui_productionDlg_hbInputs" text="Ingangen" />
@@ -20,10 +25,19 @@
         <text name="ui_productionDlg_hbCapacity" text="Capaciteit" />
         <text name="ui_productionDlg_hbIncome" text="Maandelijks inkomen" />
         <text name="ui_productionDlg_hbRecipes" text="Recepten" />
+        <text name="ui_productionDlg_hbRecipe" text="Recept" />
         <text name="ui_productionDlg_hbFinances" text="Financiën" />
         <text name="ui_productionDlg_hbRevenue" text="Inkomsten" />
         <text name="ui_productionDlg_hbCosts" text="Kosten" />
         <text name="ui_productionDlg_hbProfit" text="Nettowinst" />
+        <text name="ui_productionDlg_hbCyclesPerMonth" text="Cycli/Mnd" />
+        <text name="ui_productionDlg_hbSupplyDuration" text="Voorraadduur" />
+        <text name="ui_productionDlg_hbOutputMode" text="Uitgangsmodus" />
+        <text name="ui_productionDlg_hbLocation" text="Locatie" />
+        <text name="ui_productionDlg_hbDestination" text="Bestemming" />
+        <text name="ui_productionDlg_hbStatus" text="Status" />
+        <text name="ui_production_status_active" text="Actief" />
+        <text name="ui_production_status_inactive" text="Inactief" />
         <text name="ui_productionDlg_totalIncome" text="Totaal inkomen/maand:" />
         <text name="ui_productionDlg_noProductions" text="Geen producties gevonden" />
         

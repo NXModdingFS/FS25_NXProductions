@@ -12,6 +12,11 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="Show Fill Types" />
         <text name="ui_productionDlg_btnShowFinances" text="Show Finances" />
         <text name="ui_productionDlg_btnHideFinances" text="Hide Finances" />
+        <text name="ui_productionDlg_btnShowLogistics" text="Show Logistics" />
+        <text name="ui_productionDlg_btnHideLogistics" text="Hide Logistics" />
+        <text name="ui_productionDlg_btnChangeOutput" text="Change Output" />
+        <text name="ui_productionDlg_btnActivate" text="Activate" />
+        <text name="ui_productionDlg_btnDeactivate" text="Deactivate" />
         <text name="ui_productionDlg_btnExportCSV" text="Export CSV" />
         <text name="ui_productionDlg_hbName" text="Name" />
         <text name="ui_productionDlg_hbInputs" text="Inputs" />
@@ -20,19 +25,23 @@
         <text name="ui_productionDlg_hbCapacity" text="Capacity" />
         <text name="ui_productionDlg_hbIncome" text="Monthly Income" />
         <text name="ui_productionDlg_hbRecipes" text="Recipes" />
+        <text name="ui_productionDlg_hbRecipe" text="Recipe" />
         <text name="ui_productionDlg_hbFinances" text="Finances" />
         <text name="ui_productionDlg_hbRevenue" text="Revenue" />
         <text name="ui_productionDlg_hbCosts" text="Costs" />
         <text name="ui_productionDlg_hbProfit" text="Net Profit" />
+        <text name="ui_productionDlg_hbCyclesPerMonth" text="Cycles/Mo" />
+        <text name="ui_productionDlg_hbSupplyDuration" text="Supply Duration" />
+        <text name="ui_productionDlg_hbOutputMode" text="Output Mode" />
+        <text name="ui_productionDlg_hbLocation" text="Location" />
+        <text name="ui_productionDlg_hbDestination" text="Destination" />
         <text name="ui_productionDlg_totalIncome" text="Total Income/Month:" />
         <text name="ui_productionDlg_noProductions" text="No productions found" />
         
-        <!-- CSV Export Messages -->
         <text name="ui_productionDlg_exportSuccess" text="Production data exported successfully to: %s" />
         <text name="ui_productionDlg_exportError" text="Failed to export CSV file. Please check file permissions." />
         <text name="ui_productionDlg_exportErrorFileOpen" text="Cannot export: The CSV file is currently open in another program. Please close it and try again." />
         
-        <!-- Production Settings -->
         <text name="production_menu_section_title" text="NX Productions" />
         <text name="production_menu_automanage" text="Auto-Manage Productions" />
         <text name="production_menu_automanage_tooltip" text="Automatically activate/deactivate productions based on input availability and output capacity" />
@@ -43,5 +52,10 @@
         <text name="production_menu_hide_inactive_tooltip" text="Hide production facilities that have no active recipes running" />
         <text name="production_setting_hide_inactive_on" text="Enabled" />
         <text name="production_setting_hide_inactive_off" text="Disabled" />
+
+        <text name="ui_productionDlg_hbStatus" text="Status" />
+        <text name="ui_production_status_active" text="Active" />
+        <text name="ui_production_status_inactive" text="Inactive" />
+
     </texts>
 </l10n>

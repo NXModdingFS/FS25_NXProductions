@@ -12,6 +12,12 @@
         <text name="ui_productionDlg_btnShowFillTypes" text="充填タイプを表示" />
         <text name="ui_productionDlg_btnShowFinances" text="財務を表示" />
         <text name="ui_productionDlg_btnHideFinances" text="財務を非表示" />
+        <text name="ui_productionDlg_btnShowLogistics" text="物流を表示" />
+        <text name="ui_productionDlg_btnHideLogistics" text="物流を非表示" />
+        <text name="ui_productionDlg_btnChangeOutput" text="出力を変更" />
+        <text name="ui_productionDlg_btnActivate" text="有効化" />
+        <text name="ui_productionDlg_btnDeactivate" text="無効化" />
+        <text name="ui_productionDlg_btnExportCSV" text="CSVをエクスポート" />
         <text name="ui_productionDlg_hbName" text="名前" />
         <text name="ui_productionDlg_hbInputs" text="入力" />
         <text name="ui_productionDlg_hbOutputs" text="出力" />
@@ -19,12 +25,26 @@
         <text name="ui_productionDlg_hbCapacity" text="容量" />
         <text name="ui_productionDlg_hbIncome" text="月間収入" />
         <text name="ui_productionDlg_hbRecipes" text="レシピ" />
+        <text name="ui_productionDlg_hbRecipe" text="レシピ" />
         <text name="ui_productionDlg_hbFinances" text="財務" />
         <text name="ui_productionDlg_hbRevenue" text="収益" />
         <text name="ui_productionDlg_hbCosts" text="コスト" />
         <text name="ui_productionDlg_hbProfit" text="純利益" />
+        <text name="ui_productionDlg_hbCyclesPerMonth" text="サイクル/月" />
+        <text name="ui_productionDlg_hbSupplyDuration" text="供給期間" />
+        <text name="ui_productionDlg_hbOutputMode" text="出力モード" />
+        <text name="ui_productionDlg_hbLocation" text="場所" />
+        <text name="ui_productionDlg_hbDestination" text="目的地" />
+        <text name="ui_productionDlg_hbStatus" text="状態" />
+        <text name="ui_production_status_active" text="有効" />
+        <text name="ui_production_status_inactive" text="無効" />
         <text name="ui_productionDlg_totalIncome" text="月間総収入：" />
         <text name="ui_productionDlg_noProductions" text="生産が見つかりません" />
+        
+        <!-- CSV Export Messages -->
+        <text name="ui_productionDlg_exportSuccess" text="生産データのエクスポートに成功しました：%s" />
+        <text name="ui_productionDlg_exportError" text="CSVファイルのエクスポートに失敗しました。ファイルのアクセス許可を確認してください。" />
+        <text name="ui_productionDlg_exportErrorFileOpen" text="エクスポートできません：CSVファイルは現在別のプログラムで開かれています。閉じてから再試行してください。" />
         
         <!-- Production Settings -->
         <text name="production_menu_section_title" text="NX 生産" />
@@ -32,5 +52,10 @@
         <text name="production_menu_automanage_tooltip" text="入力の可用性と出力容量に基づいて生産を自動的に有効または無効にします" />
         <text name="production_setting_automanage_on" text="有効" />
         <text name="production_setting_automanage_off" text="無効" />
+
+        <text name="production_menu_hide_inactive" text="非アクティブな生産を非表示" />
+        <text name="production_menu_hide_inactive_tooltip" text="アクティブなレシピが実行されていない生産施設を非表示にします" />
+        <text name="production_setting_hide_inactive_on" text="有効" />
+        <text name="production_setting_hide_inactive_off" text="無効" />
     </texts>
 </l10n>
