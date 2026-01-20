@@ -24,6 +24,8 @@ A production management mod for Farming Simulator 25 that provides an overview o
 
 - CSV Export: Export all production data for external analysis
 
+- Logistics Page (v1.0.0.1) - Overview of all production's and their recipies includes, Supply Duration, Cycles/MO, Output Mode, Location, Status
+
 - Multi-Language Support: Available in 12 languages
 
 - Processing Type: See if the production supports Serial (S) or Parallel (P) processing. When the production supports Parallel processing, for every tick the server does, every active recipe advances. When the production only supports serial processing, for every tick the server does, only ONE recipe advances in turn.
