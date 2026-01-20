@@ -1,3 +1,6 @@
+> [!NOTE]
+> Edits of this mod file are not permitted. If you contact me with a bug report and you have edited the code, it makes it much harder for me to assist you with your query. Please join the discord with the link below https://discord.gg/aDTTXAhE2m where i will amswer any questions you may have.
+
 <ins>**NX Productions**</ins>
 
 A production management mod for Farming Simulator 25 that provides an overview of all your production facilities with automatic management capabilities.
