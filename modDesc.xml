@@ -4,14 +4,31 @@
     <version>1.0.0.1</version>
     <title>
         <en>NX Productions</en>
-        <de>Produktionsübersicht</de>
-        <fr>NX Productions</fr>
+        <de>NX Produktionen</de>
+        <fr>Productions NX</fr>
     </title>
     <description>
         <en><![CDATA[View all your productions with fill types, capacities, and monthly income.
         
 Press R Shift + P to open the Production Overview.
 Logo: MarkThor
+
+v1.0.0.1(Patch) Changelog:
+
+Bug Fixes:
+
+- Status instantly updated no flicker from to green active before Missing inputs as previous. When on missing inputs if you deactivated the recipe then reactivated it would sow as active you would then have to go to a different screen before it update, Now there is no need.
+
+- Recipes with extended names e.g. **Butter (Buffalo Milk)** now show full name previously this caused recipe activation/deactivation issues
+
+**Updates:**
+
+- Color co-ordination to give recipes with extended names more room. Recipe status's are now marked in the same color scheme as the logistics page.
+
+"Active" (Green) - Recipe is running AND has inputs available
+"Active (!)" (Orange) - Recipe is set to active BUT missing inputs (game has paused it)
+"Inactive" (Red) - Recipe is manually deactivated by the player
+
 v1.0.0.1 Changelog:
 Logistics screen:
 - And Production name and recipe is also contained on this page
@@ -33,6 +50,7 @@ Status's may appear to be delayed, this is not the case it is the game syncing t
 - "Inactive" (Red) - Recipe is manually deactivated by the player
 Bug Fix's
 - Fixed: (Production rows now dynamically calculated based on number of fill types, inputs/outputs and also recipe count)
+
 v1.0.0.0 Changelog:
 - Production Overview: View all productions with fill levels, capacities, monthly income and processing type.
 - Toggle Views: Switch between inputs, outputs, and recipes
@@ -41,70 +59,108 @@ v1.0.0.0 Changelog:
 - CSV Export: Export all production data for external analysis
 - Multi-Language Support: Available in 12 languages
 ]]></en>
-        <de><![CDATA[Zeige alle deine Produktionen mit Füllarten, Kapazitäten und monatlichem Einkommen an.
-        
-Drücke R Shift + P, um die Produktionsübersicht zu öffnen.
+
+        <de><![CDATA[Alle Ihre Produktionen mit Füllarten, Kapazitäten und monatlichem Einkommen anzeigen.
+
+Drücken Sie R Shift + P, um die Produktionsübersicht zu öffnen.
 Logo: MarkThor
-v1.0.0.1 Änderungen:
-Logistik-Bildschirm:
-- Produktionsname und Rezept sind auf dieser Seite enthalten
-Vorratsdauer:
+
+v1.0.0.1(Patch) Änderungsprotokoll:
+
+Fehlerbehebungen:
+
+- Status wird sofort aktualisiert, kein Flackern von Grün aktiv bei fehlenden Eingaben wie zuvor. Wenn bei fehlenden Eingaben das Rezept deaktiviert und dann reaktiviert wurde, würde es als aktiv angezeigt werden, Sie müssten dann zu einem anderen Bildschirm wechseln, bevor es aktualisiert wird. Jetzt ist dies nicht mehr nötig.
+
+- Rezepte mit erweiterten Namen, z. B. **Butter (Büffelmilch)**, zeigen jetzt den vollständigen Namen an, zuvor verursachte dies Probleme bei der Aktivierung/Deaktivierung von Rezepten.
+
+**Updates:**
+
+- Farbkoordination, um Rezepten mit langen Namen mehr Platz zu geben. Rezeptstatus wird nun in derselben Farbschema wie die Logistikseite angezeigt.
+
+"Aktiv" (Grün) - Rezept läuft UND Eingaben sind verfügbar
+"Aktiv (!)" (Orange) - Rezept ist auf aktiv gesetzt, aber Eingaben fehlen (Spiel hat es pausiert)
+"Inaktiv" (Rot) - Rezept wurde manuell vom Spieler deaktiviert
+
+v1.0.0.1 Änderungsprotokoll:
+Logistikbildschirm:
+- Produktionsname und Rezept sind auch auf dieser Seite enthalten
+Versorgungsdauer:
 - Berücksichtigt gemeinsamen Verbrauch - Mehrere Rezepte verwenden denselben Eingang
 - Verwendet tatsächliche Verbrauchsraten - Basierend auf Zyklen pro Stunde
-- Findet den Engpass - Berechnet basierend darauf, welcher Eingang zuerst leer wird
+- Findet den Engpass - Berechnet, welcher Eingang zuerst leer wird, z. B. wenn mehrere Rezepte denselben Eingang verwenden
 Zyklen/Monat:
-- Zeigt wie viele Zyklen pro Monat das Rezept ausgibt, wenn Ein- und Ausgänge aufrechterhalten werden
+- Hebt einfach hervor, wie viele Zyklen pro Monat das Rezept ausgibt, wenn Ein- und Ausgänge aufrechterhalten werden
 Ausgabemodus:
-- Zeigt an, auf welchen Modus das Rezept eingestellt ist, z.B. Lagern, Verkaufen, Verteilen
+- Zeigt, in welchem Modus das Rezept eingestellt ist, z. B. Lagern, Verkaufen, Verteilen
 Standort:
-- Zeigt an, wohin das Produkt verteilt wird (Hinweis: Nur wenn Ausgabemodus "Verteilen" ausgewählt ist)
-- Wenn auf "Lagern" oder "Verkaufen" eingestellt, wird "N/A" in Rot angezeigt
+- Zeigt an, wohin das Produkt des Rezepts verteilt wird. (Hinweis: Nur wenn Ausgabemodus „Verteilen“ ausgewählt ist)
+- Wenn auf Lagern oder Verkaufen eingestellt, wird dies als N/A in Rot angezeigt
 Status:
-Status-Änderungen können verzögert erscheinen. Dies liegt am Synchronisationsprozess des Spiels. Bei Neuladen des Fensters oder Änderung eines anderen Rezepts wird der Status aktualisiert. Dies liegt außerhalb unserer Kontrolle.
-- "Aktiv" (Grün) - Rezept läuft UND hat verfügbare Eingänge
-- "Aktiv (!)" (Orange) - Rezept ist aktiv ABER Eingänge fehlen (Spiel hat es pausiert)
+Statusänderungen können verzögert erscheinen, dies ist jedoch nicht der Fall. Das Spiel synchronisiert die Statusänderung. Wenn Sie das Fenster neu laden oder ein anderes Rezept ändern, wird der Status aktualisiert. Dies liegt außerhalb unserer Kontrolle.
+- "Aktiv" (Grün) - Rezept läuft UND Eingaben sind verfügbar
+- "Aktiv (!)" (Orange) - Rezept ist auf aktiv gesetzt, aber Eingaben fehlen (Spiel hat es pausiert)
 - "Inaktiv" (Rot) - Rezept wurde manuell vom Spieler deaktiviert
 Fehlerbehebungen:
-- Behoben: Produktionszeilen werden nun dynamisch basierend auf Anzahl der Füllarten, Ein-/Ausgänge und Rezeptanzahl berechnet
-v1.0.0.0 Änderungen:
-- Produktionsübersicht: Zeige alle Produktionen mit Füllständen, Kapazitäten, monatlichem Einkommen und Verarbeitungstyp
-- Ansichten umschalten: Wechsel zwischen Eingängen, Ausgängen und Rezepten
-- Finanzverfolgung: Siehe monatliche Einnahmen, Kosten und Nettogewinn für jede Produktion
-- Automatische Verwaltung: Automatisches Aktivieren/Deaktivieren von Produktionen basierend auf Eingangsverfügbarkeit und Ausgangskapazität
-- CSV-Export: Exportiere alle Produktionsdaten für externe Analyse
-- Mehrsprachige Unterstützung: Verfügbar in 12 Sprachen
+- Behoben: Produktionszeilen werden nun dynamisch basierend auf der Anzahl der Füllarten, Ein-/Ausgänge und Rezeptanzahl berechnet
+
+v1.0.0.0 Änderungsprotokoll:
+- Produktionsübersicht: Alle Produktionen mit Füllständen, Kapazitäten, monatlichem Einkommen und Verarbeitungstyp anzeigen.
+- Ansichten umschalten: Zwischen Eingängen, Ausgängen und Rezepten wechseln
+- Finanzverfolgung: Monatliche Einnahmen, Kosten und Nettogewinn jeder Produktion anzeigen
+- Automatische Verwaltung: Produktionen basierend auf Eingangsverfügbarkeit und Ausgangskapazität automatisch aktivieren/deaktivieren
+- CSV-Export: Alle Produktionsdaten für externe Analyse exportieren
+- Mehrsprachige Unterstützung: In 12 Sprachen verfügbar
 ]]></de>
+
         <fr><![CDATA[Visualisez toutes vos productions avec les types de remplissage, les capacités et les revenus mensuels.
-        
+
 Appuyez sur R Shift + P pour ouvrir l'aperçu des productions.
 Logo: MarkThor
-v1.0.0.1 Modifications :
+
+v1.0.0.1(Patch) Journal des modifications:
+
+Corrections de bugs :
+
+- Le statut est mis à jour immédiatement, pas de clignotement du vert actif lorsqu’il manque des entrées comme auparavant. Si vous désactivez puis réactivez la recette lorsqu’il manque des entrées, elle serait affichée comme active, vous devriez ensuite passer à un autre écran avant la mise à jour. Maintenant, ce n’est plus nécessaire.
+
+- Les recettes avec des noms étendus, par ex. **Beurre (Lait de buffle)**, affichent maintenant le nom complet, auparavant cela causait des problèmes lors de l’activation/désactivation des recettes.
+
+**Mises à jour :**
+
+- Coordination des couleurs pour donner plus de place aux recettes avec des noms longs. Le statut de la recette est maintenant marqué selon le même schéma de couleurs que la page logistique.
+
+"Actif" (Vert) - La recette fonctionne ET a des entrées disponibles
+"Actif (!)" (Orange) - La recette est définie sur actif MAIS des entrées manquent (le jeu l’a mise en pause)
+"Inactif" (Rouge) - La recette est désactivée manuellement par le joueur
+
+v1.0.0.1 Journal des modifications :
 Écran logistique :
 - Le nom de la production et la recette sont également contenus sur cette page
-Durée d'approvisionnement :
+Durée d’approvisionnement :
 - Prend en compte la consommation partagée - Plusieurs recettes utilisant la même entrée
 - Utilise les taux de consommation réels - Basé sur les cycles par heure
-- Trouve le goulot d'étranglement - Calcule en fonction de l'entrée susceptible de s'épuiser en premier
+- Trouve le goulot d’étranglement - Calcule quelle entrée est susceptible de s’épuiser en premier, par ex. si plusieurs recettes utilisent la même entrée
 Cycles/Mois :
-- Indique simplement combien de cycles par mois la recette produit si les entrées et sorties sont maintenues
+- Indique combien de cycles par mois la recette produit si les entrées et sorties sont maintenues
 Mode de sortie :
-- Affiche le mode dans lequel la recette est définie, par exemple Stockage, Vente, Distribution
+- Affiche le mode dans lequel la recette est définie, par ex. Stockage, Vente, Distribution
 Emplacement :
-- Cela montre où le produit de la recette est distribué (Note : Uniquement si le mode de sortie Distribution est sélectionné)
-- Si défini sur Stockage ou Vente, cela s'affichera comme N/A en rouge
+- Montre où le produit de la recette est distribué (Remarque : uniquement si le mode de sortie Distribution est sélectionné)
+- Si défini sur Stockage ou Vente, cela s’affichera comme N/A en rouge
 Statut :
-Les statuts peuvent sembler retardés, ce n'est pas le cas, c'est le jeu qui synchronise le changement de statut. Si vous rechargez la fenêtre ou modifiez une autre recette, le statut se mettra à jour. Cela échappe à notre contrôle et dépend de la façon dont le jeu traite les changements.
+Les statuts peuvent sembler retardés, ce n’est pas le cas, le jeu synchronise le changement de statut. Si vous rechargez la fenêtre ou modifiez une autre recette, le statut sera mis à jour. Cela échappe à notre contrôle.
 - "Actif" (Vert) - La recette fonctionne ET a des entrées disponibles
-- "Actif (!)" (Orange) - La recette est active MAIS il manque des entrées (le jeu l'a mise en pause)
+- "Actif (!)" (Orange) - La recette est définie sur actif MAIS des entrées manquent (le jeu l’a mise en pause)
 - "Inactif" (Rouge) - La recette est désactivée manuellement par le joueur
 Corrections de bugs :
-- Corrigé : Les lignes de production sont maintenant calculées dynamiquement en fonction du nombre de types de remplissage, d'entrées/sorties et du nombre de recettes
-v1.0.0.0 Modifications :
-- Aperçu des productions : Visualisez toutes les productions avec les niveaux de remplissage, les capacités, les revenus mensuels et le type de traitement
-- Basculer les vues : Basculez entre les entrées, les sorties et les recettes
-- Suivi financier : Consultez les revenus mensuels, les coûts et le bénéfice net pour chaque production
+- Corrigé : les lignes de production sont maintenant calculées dynamiquement en fonction du nombre de types de remplissage, des entrées/sorties et du nombre de recettes
+
+v1.0.0.0 Journal des modifications :
+- Aperçu des productions : Visualisez toutes les productions avec niveaux de remplissage, capacités, revenus mensuels et type de traitement
+- Basculer les vues : Basculez entre entrées, sorties et recettes
+- Suivi financier : Consultez les revenus mensuels, coûts et bénéfice net de chaque production
 - Gestion automatique : Active/désactive automatiquement les productions en fonction de la disponibilité des entrées et de la capacité de sortie
-- Export CSV : Exportez toutes les données de production pour une analyse externe
+- Export CSV : Exportez toutes les données de production pour analyse externe
 - Support multilingue : Disponible en 12 langues
 ]]></fr>
     </description>
@@ -126,5 +182,4 @@ v1.0.0.0 Modifications :
             <binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_p" />
         </actionBinding>
     </inputBinding> 
-    
 </modDesc>
