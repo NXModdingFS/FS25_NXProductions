@@ -1,3 +1,7 @@
+> [!NOTE]
+> Edits of this mod file are not permitted.
+> You may submit a bug report via the Github Repo, however, the prefered method is through our discord this allows us to easily ask questions sould I need more evidence https://discord.gg/aDTTXAhE2m
+
 <ins>**NX Productions**</ins>
 
 A production management mod for Farming Simulator 25 that provides an overview of all your production facilities with automatic management capabilities.
@@ -41,6 +45,3 @@ Access settings via ESC → Settings → Game Settings → NX Productions
 - Disabled: Manual control only (default)
 
 This setting checks run every 5 seconds and only affect productions with configured recipes. Changes are synchronized across all players in multiplayer.
-
-> [!NOTE]
-> Edits of this mod file are not permitted. If you contact me with a bug report and you have edited the code, it makes it much harder for me to assist you with your query. Please join the discord with the link below https://discord.gg/aDTTXAhE2m where i will amswer any questions you may have.
