@@ -12,6 +12,10 @@ A production management mod for Farming Simulator 25 that provides an overview o
 - Review 2: https://www.youtube.com/watch?v=txaAkGMpJU4 Thank you Gilgamoth
 - Review 3: https://youtu.be/xiBMkSjElYc?si=cDdK42Rq-VnMmoz2 Thank you WolfieFarming
 
+**Mod Review Updates:**
+
+- v1.0.0.1 Wolfie Farming: https://youtu.be/gUEfjehgG_Y?si=A5YyOTaA7vMqetXR
+
 <ins>**Key Features**</ins>
 
 - Production Overview: View all productions with fill levels, capacities, monthly income and processing type.
