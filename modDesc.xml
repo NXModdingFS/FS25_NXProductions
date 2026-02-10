@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>NX Modding</author>
-    <version>1.0.0.0</version>
+    <version>1.0.0.2</version>
     <title>
         <en>Productions Manager</en>
         <de>Produktionsmanager</de>
@@ -77,4 +77,5 @@ Logo: MarkThor
             <binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_p" />
         </actionBinding>
     </inputBinding> 
+
 </modDesc>
