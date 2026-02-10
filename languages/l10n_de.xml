@@ -3,8 +3,11 @@
     <translationContributions>
     </translationContributions>
     <texts>
-        <text name="input_SHOW_PRODUCTION_DLG" text="NX Produktionen" />
-        <text name="ui_productionDlg_title" text="NX Produktionen" />
+        <!-- Main UI Dialog Elements -->
+        <text name="input_SHOW_PRODUCTION_DLG" text="Produktionsmanager" />
+        <text name="ui_productionDlg_title" text="Produktionsmanager" />
+        
+        <!-- Dialog Buttons -->
         <text name="ui_productionDlg_btnClose" text="Schließen" />
         <text name="ui_productionDlg_btnShowOutputs" text="Ausgänge anzeigen" />
         <text name="ui_productionDlg_btnShowInputs" text="Eingänge anzeigen" />
@@ -18,6 +21,8 @@
         <text name="ui_productionDlg_btnActivate" text="Aktivieren" />
         <text name="ui_productionDlg_btnDeactivate" text="Deaktivieren" />
         <text name="ui_productionDlg_btnExportCSV" text="CSV exportieren" />
+        
+        <!-- Dialog Table Headers -->
         <text name="ui_productionDlg_hbName" text="Name" />
         <text name="ui_productionDlg_hbInputs" text="Eingänge" />
         <text name="ui_productionDlg_hbOutputs" text="Ausgänge" />
@@ -35,27 +40,86 @@
         <text name="ui_productionDlg_hbOutputMode" text="Ausgabemodus" />
         <text name="ui_productionDlg_hbLocation" text="Standort" />
         <text name="ui_productionDlg_hbDestination" text="Ziel" />
+        <text name="ui_productionDlg_hbTotals" text="SUMMEN" />
         <text name="ui_productionDlg_hbStatus" text="Status" />
-        <text name="ui_production_status_active" text="Aktiv" />
-        <text name="ui_production_status_inactive" text="Inaktiv" />
+        
+        <!-- Dialog Messages -->
         <text name="ui_productionDlg_totalIncome" text="Gesamteinkommen/Monat:" />
         <text name="ui_productionDlg_noProductions" text="Keine Produktionen gefunden" />
+        
+        <!-- Production Status Labels -->
+        <text name="ui_prodmgr_status_active" text="Aktiv" />
+        <text name="ui_prodmgr_status_inactive" text="Inaktiv" />
         
         <!-- CSV Export Messages -->
         <text name="ui_productionDlg_exportSuccess" text="Produktionsdaten erfolgreich exportiert nach: %s" />
         <text name="ui_productionDlg_exportError" text="CSV-Export fehlgeschlagen. Bitte Dateiberechtigungen prüfen." />
         <text name="ui_productionDlg_exportErrorFileOpen" text="Export nicht möglich: Die CSV-Datei ist in einem anderen Programm geöffnet. Bitte schließen und erneut versuchen." />
         
-        <!-- Production Settings -->
-        <text name="production_menu_section_title" text="NX Produktionen" />
+        <!-- Settings Menu Section Title -->
+        <text name="production_menu_section_title" text="Produktionsmanager" />
+        
+        <!-- Auto-Manage Settings -->
         <text name="production_menu_automanage" text="Produktionen automatisch verwalten" />
         <text name="production_menu_automanage_tooltip" text="Produktionen automatisch aktivieren/deaktivieren basierend auf Eingangsverfügbarkeit und Ausgangskapazität" />
         <text name="production_setting_automanage_on" text="Aktiviert" />
         <text name="production_setting_automanage_off" text="Deaktiviert" />
 
+        <!-- Hide Inactive Settings -->
         <text name="production_menu_hide_inactive" text="Inaktive Produktionen ausblenden" />
         <text name="production_menu_hide_inactive_tooltip" text="Produktionsstätten ausblenden, die keine aktiven Rezepte ausführen" />
         <text name="production_setting_hide_inactive_on" text="Aktiviert" />
         <text name="production_setting_hide_inactive_off" text="Deaktiviert" />
+
+        <!-- Notification Toggle Settings -->
+        <text name="production_menu_notify_smart_control" text="Bei Smart-Control-Aktionen benachrichtigen" />
+        <text name="production_menu_notify_smart_control_tooltip" text="Benachrichtigungen anzeigen, wenn der Auto-Manager Produktionen startet oder stoppt" />
+        
+        <text name="production_menu_notify_low_inputs" text="Bei niedrigen Eingangspegeln benachrichtigen" />
+        <text name="production_menu_notify_low_inputs_tooltip" text="Warnungen anzeigen, wenn Produktionseingänge zur Neige gehen" />
+        
+        <text name="production_menu_notify_high_outputs" text="Bei hohen Ausgangspegeln benachrichtigen" />
+        <text name="production_menu_notify_high_outputs_tooltip" text="Warnungen anzeigen, wenn Ausgangslager fast voll ist" />
+        
+        <text name="production_setting_notify_on" text="Aktiviert" />
+        <text name="production_setting_notify_off" text="Deaktiviert" />
+        
+        <!-- Threshold Settings -->
+        <text name="production_menu_low_input_threshold" text="Warnschwelle für niedrige Eingänge" />
+        <text name="production_menu_low_input_threshold_tooltip" text="Prozentsatz, bei dem vor niedrigen Eingangspegeln gewarnt wird" />
+        
+        <text name="production_menu_high_output_threshold" text="Warnschwelle für hohe Ausgänge" />
+        <text name="production_menu_high_output_threshold_tooltip" text="Prozentsatz, bei dem vor vollem Ausgangslager gewarnt wird" />
+        
+        <!-- Notification Duration Settings -->
+        <text name="production_menu_notification_duration" text="Anzeigedauer der Benachrichtigung" />
+        <text name="production_menu_notification_duration_tooltip" text="Wie lange Benachrichtigungen auf dem Bildschirm sichtbar bleiben" />
+        
+        <text name="production_setting_duration_3s" text="3 Sekunden" />
+        <text name="production_setting_duration_4s" text="4 Sekunden" />
+        <text name="production_setting_duration_5s" text="5 Sekunden" />
+        <text name="production_setting_duration_6s" text="6 Sekunden" />
+        <text name="production_setting_duration_8s" text="8 Sekunden" />
+        <text name="production_setting_duration_10s" text="10 Sekunden" />
+
+        <!-- Smart Control Stop Reasons -->
+        <text name="production_notify_reason_output_full" text="Ausgangslager voll" />
+        <text name="production_notify_reason_out_of_inputs" text="Eingänge aufgebraucht" />
+        <text name="production_notify_reason_low_inputs" text="Eingänge niedrig" />
+        <text name="production_notify_reason_unknown" text="Unbekannter Grund" />
+
+        <!-- Smart Control Notification Messages -->
+        <text name="production_notify_started" text="%s gestartet bei %s" />
+        <text name="production_notify_stopped" text="%s gestoppt bei %s - %s" />
+        <text name="production_notify_resumed" text="%s fortgesetzt bei %s" />
+        <text name="production_notify_inputs_restored" text="%s bei %s - Eingänge wurden wiederhergestellt!" />
+        <text name="production_notify_out_of_inputs" text="%s bei %s hat KEINE Eingänge mehr: %s" />
+        <text name="production_notify_low_inputs" text="%s bei %s hat wenig Eingänge: %s" />
+        <text name="production_notify_high_outputs" text="%s bei %s hat fast volle Ausgänge: %s" />
+        
+        <!-- Location Fallback Labels -->
+        <text name="production_notify_unknown_location" text="Unbekannter Standort" />
+        <text name="production_notify_production_facility" text="Produktionsstätte" />
+
     </texts>
 </l10n>

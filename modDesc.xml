@@ -1,178 +1,73 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>NX Modding</author>
-    <version>1.0.0.1</version>
+    <version>1.0.0.0</version>
     <title>
-        <en>NX Productions</en>
-        <de>NX Produktionen</de>
-        <fr>Productions NX</fr>
+        <en>Productions Manager</en>
+        <de>Produktionsmanager</de>
+        <fr>Gestionnaire De Production</fr>
     </title>
     <description>
-        <en><![CDATA[View all your productions with fill types, capacities, and monthly income.
-        
-Press R Shift + P to open the Production Overview.
+        <en><![CDATA[Comprehensive production management system for Farming Simulator 25.
+
+Features:
+• Production Overview: View all productions with fill levels, capacities, and monthly income
+• Toggle Views: Switch between inputs, outputs, and recipes
+• Financial Tracking: See monthly revenue, costs, and net profit for each production
+• Auto-Management: Automatically activate/deactivate productions based on input availability and output capacity
+• Smart Notifications: Get alerts when productions stop/start or when inputs are low/outputs are high
+• CSV Export: Export all production data for external analysis
+• Multi-Language Support: Available in 3 languages
+
+Press Right Shift + P to open the Production Overview.
+
 Logo: MarkThor
-
-v1.0.0.1(Patch) Changelog:
-
-Bug Fixes:
-
-- Status instantly updated no flicker from to green active before Missing inputs as previous. When on missing inputs if you deactivated the recipe then reactivated it would sow as active you would then have to go to a different screen before it update, Now there is no need.
-
-- Recipes with extended names e.g. **Butter (Buffalo Milk)** now show full name previously this caused recipe activation/deactivation issues
-
-**Updates:**
-
-- Color co-ordination to give recipes with extended names more room. Recipe status's are now marked in the same color scheme as the logistics page.
-
-"Active" (Green) - Recipe is running AND has inputs available
-"Active (!)" (Orange) - Recipe is set to active BUT missing inputs (game has paused it)
-"Inactive" (Red) - Recipe is manually deactivated by the player
-
-v1.0.0.1 Changelog:
-Logistics screen:
-- And Production name and recipe is also contained on this page
-Supply Duration:
-- Accounts for shared consumption - Multiple recipes using the same input
-- Uses actual consumption rates - Based on cyclesPerHour
-- Finds the bottleneck - Calculates based on which input is likely to run out first e.g. if multiple recipes use the same input
-Cycles/MO:
-- Simply highlights how many cycles er month the recipe is outputting if inputs and outputs are maintained
-Output Mode:
-- Showcases which mode the recipe is set to e.g. Storing, Selling, Distributing
-Location:
-- This shows where the product which recipe is set too distributing. (Note: Only if output mode distributing is selected)
-- If set to Storing or selling this will display as N/A in Red
-Status:
-Status's may appear to be delayed, this is not the case it is the game syncing the change in status to the game. If you reload the window or alter another recipe it will update. This is out of our hands and is down to how the game processes changes.
-- "Active" (Green) - Recipe is running AND has inputs available
-- "Active (!)" (Orange) - Recipe is set to active BUT missing inputs (game has paused it)
-- "Inactive" (Red) - Recipe is manually deactivated by the player
-Bug Fix's
-- Fixed: (Production rows now dynamically calculated based on number of fill types, inputs/outputs and also recipe count)
-
-v1.0.0.0 Changelog:
-- Production Overview: View all productions with fill levels, capacities, monthly income and processing type.
-- Toggle Views: Switch between inputs, outputs, and recipes
-- Financial Tracking: See monthly revenue, costs, and net profit for each production
-- Auto-Management: Automatically activate/deactivate productions based on input availability and output capacity
-- CSV Export: Export all production data for external analysis
-- Multi-Language Support: Available in 12 languages
 ]]></en>
 
-        <de><![CDATA[Alle Ihre Produktionen mit Füllarten, Kapazitäten und monatlichem Einkommen anzeigen.
+        <de><![CDATA[Umfassendes Produktionsverwaltungssystem für Landwirtschafts-Simulator 25.
 
-Drücken Sie R Shift + P, um die Produktionsübersicht zu öffnen.
+Funktionen:
+• Produktionsübersicht: Alle Produktionen mit Füllständen, Kapazitäten und monatlichem Einkommen anzeigen
+• Ansichten umschalten: Zwischen Eingängen, Ausgängen und Rezepten wechseln
+• Logistikverfolgung: Ausgabezyklen, Standort, Status, Rezeptname und Verteilungsziel anzeigen
+• Finanzverfolgung: Monatliche Einnahmen, Kosten und Nettogewinn jeder Produktion anzeigen
+• Automatische Verwaltung: Produktionen basierend auf Eingangsverfügbarkeit und Ausgangskapazität automatisch aktivieren/deaktivieren
+• Intelligente Benachrichtigungen: Warnungen erhalten, wenn Produktionen stoppen/starten oder wenn Eingaben niedrig/Ausgaben hoch sind
+• CSV-Export: Alle Produktionsdaten für externe Analyse exportieren
+• Mehrsprachige Unterstützung: In 3 Sprachen verfügbar
+
+Drücken Sie Rechte Umschalttaste + P, um die Produktionsübersicht zu öffnen.
+
 Logo: MarkThor
-
-v1.0.0.1(Patch) Änderungsprotokoll:
-
-Fehlerbehebungen:
-
-- Status wird sofort aktualisiert, kein Flackern von Grün aktiv bei fehlenden Eingaben wie zuvor. Wenn bei fehlenden Eingaben das Rezept deaktiviert und dann reaktiviert wurde, würde es als aktiv angezeigt werden, Sie müssten dann zu einem anderen Bildschirm wechseln, bevor es aktualisiert wird. Jetzt ist dies nicht mehr nötig.
-
-- Rezepte mit erweiterten Namen, z. B. **Butter (Büffelmilch)**, zeigen jetzt den vollständigen Namen an, zuvor verursachte dies Probleme bei der Aktivierung/Deaktivierung von Rezepten.
-
-**Updates:**
-
-- Farbkoordination, um Rezepten mit langen Namen mehr Platz zu geben. Rezeptstatus wird nun in derselben Farbschema wie die Logistikseite angezeigt.
-
-"Aktiv" (Grün) - Rezept läuft UND Eingaben sind verfügbar
-"Aktiv (!)" (Orange) - Rezept ist auf aktiv gesetzt, aber Eingaben fehlen (Spiel hat es pausiert)
-"Inaktiv" (Rot) - Rezept wurde manuell vom Spieler deaktiviert
-
-v1.0.0.1 Änderungsprotokoll:
-Logistikbildschirm:
-- Produktionsname und Rezept sind auch auf dieser Seite enthalten
-Versorgungsdauer:
-- Berücksichtigt gemeinsamen Verbrauch - Mehrere Rezepte verwenden denselben Eingang
-- Verwendet tatsächliche Verbrauchsraten - Basierend auf Zyklen pro Stunde
-- Findet den Engpass - Berechnet, welcher Eingang zuerst leer wird, z. B. wenn mehrere Rezepte denselben Eingang verwenden
-Zyklen/Monat:
-- Hebt einfach hervor, wie viele Zyklen pro Monat das Rezept ausgibt, wenn Ein- und Ausgänge aufrechterhalten werden
-Ausgabemodus:
-- Zeigt, in welchem Modus das Rezept eingestellt ist, z. B. Lagern, Verkaufen, Verteilen
-Standort:
-- Zeigt an, wohin das Produkt des Rezepts verteilt wird. (Hinweis: Nur wenn Ausgabemodus „Verteilen“ ausgewählt ist)
-- Wenn auf Lagern oder Verkaufen eingestellt, wird dies als N/A in Rot angezeigt
-Status:
-Statusänderungen können verzögert erscheinen, dies ist jedoch nicht der Fall. Das Spiel synchronisiert die Statusänderung. Wenn Sie das Fenster neu laden oder ein anderes Rezept ändern, wird der Status aktualisiert. Dies liegt außerhalb unserer Kontrolle.
-- "Aktiv" (Grün) - Rezept läuft UND Eingaben sind verfügbar
-- "Aktiv (!)" (Orange) - Rezept ist auf aktiv gesetzt, aber Eingaben fehlen (Spiel hat es pausiert)
-- "Inaktiv" (Rot) - Rezept wurde manuell vom Spieler deaktiviert
-Fehlerbehebungen:
-- Behoben: Produktionszeilen werden nun dynamisch basierend auf der Anzahl der Füllarten, Ein-/Ausgänge und Rezeptanzahl berechnet
-
-v1.0.0.0 Änderungsprotokoll:
-- Produktionsübersicht: Alle Produktionen mit Füllständen, Kapazitäten, monatlichem Einkommen und Verarbeitungstyp anzeigen.
-- Ansichten umschalten: Zwischen Eingängen, Ausgängen und Rezepten wechseln
-- Finanzverfolgung: Monatliche Einnahmen, Kosten und Nettogewinn jeder Produktion anzeigen
-- Automatische Verwaltung: Produktionen basierend auf Eingangsverfügbarkeit und Ausgangskapazität automatisch aktivieren/deaktivieren
-- CSV-Export: Alle Produktionsdaten für externe Analyse exportieren
-- Mehrsprachige Unterstützung: In 12 Sprachen verfügbar
 ]]></de>
 
-        <fr><![CDATA[Visualisez toutes vos productions avec les types de remplissage, les capacités et les revenus mensuels.
+        <fr><![CDATA[Système complet de gestion des productions pour Farming Simulator 25.
 
-Appuyez sur R Shift + P pour ouvrir l'aperçu des productions.
+Fonctionnalités:
+• Aperçu des productions: Visualisez toutes les productions avec niveaux de remplissage, capacités et revenus mensuels
+• Basculer les vues: Basculez entre entrées, sorties et recettes
+• Suivi logistique: Consultez les cycles de sortie, emplacement, statut, nom de la recette et destination de distribution
+• Suivi financier: Consultez les revenus mensuels, coûts et bénéfice net de chaque production
+• Gestion automatique: Active/désactive automatiquement les productions en fonction de la disponibilité des entrées et de la capacité de sortie
+• Notifications intelligentes: Recevez des alertes lorsque les productions s'arrêtent/démarrent ou lorsque les entrées sont faibles/sorties élevées
+• Export CSV: Exportez toutes les données de production pour analyse externe
+• Support multilingue: Disponible en 3 langues
+
+Appuyez sur Maj Droite + P pour ouvrir l'aperçu des productions.
+
 Logo: MarkThor
-
-v1.0.0.1(Patch) Journal des modifications:
-
-Corrections de bugs :
-
-- Le statut est mis à jour immédiatement, pas de clignotement du vert actif lorsqu’il manque des entrées comme auparavant. Si vous désactivez puis réactivez la recette lorsqu’il manque des entrées, elle serait affichée comme active, vous devriez ensuite passer à un autre écran avant la mise à jour. Maintenant, ce n’est plus nécessaire.
-
-- Les recettes avec des noms étendus, par ex. **Beurre (Lait de buffle)**, affichent maintenant le nom complet, auparavant cela causait des problèmes lors de l’activation/désactivation des recettes.
-
-**Mises à jour :**
-
-- Coordination des couleurs pour donner plus de place aux recettes avec des noms longs. Le statut de la recette est maintenant marqué selon le même schéma de couleurs que la page logistique.
-
-"Actif" (Vert) - La recette fonctionne ET a des entrées disponibles
-"Actif (!)" (Orange) - La recette est définie sur actif MAIS des entrées manquent (le jeu l’a mise en pause)
-"Inactif" (Rouge) - La recette est désactivée manuellement par le joueur
-
-v1.0.0.1 Journal des modifications :
-Écran logistique :
-- Le nom de la production et la recette sont également contenus sur cette page
-Durée d’approvisionnement :
-- Prend en compte la consommation partagée - Plusieurs recettes utilisant la même entrée
-- Utilise les taux de consommation réels - Basé sur les cycles par heure
-- Trouve le goulot d’étranglement - Calcule quelle entrée est susceptible de s’épuiser en premier, par ex. si plusieurs recettes utilisent la même entrée
-Cycles/Mois :
-- Indique combien de cycles par mois la recette produit si les entrées et sorties sont maintenues
-Mode de sortie :
-- Affiche le mode dans lequel la recette est définie, par ex. Stockage, Vente, Distribution
-Emplacement :
-- Montre où le produit de la recette est distribué (Remarque : uniquement si le mode de sortie Distribution est sélectionné)
-- Si défini sur Stockage ou Vente, cela s’affichera comme N/A en rouge
-Statut :
-Les statuts peuvent sembler retardés, ce n’est pas le cas, le jeu synchronise le changement de statut. Si vous rechargez la fenêtre ou modifiez une autre recette, le statut sera mis à jour. Cela échappe à notre contrôle.
-- "Actif" (Vert) - La recette fonctionne ET a des entrées disponibles
-- "Actif (!)" (Orange) - La recette est définie sur actif MAIS des entrées manquent (le jeu l’a mise en pause)
-- "Inactif" (Rouge) - La recette est désactivée manuellement par le joueur
-Corrections de bugs :
-- Corrigé : les lignes de production sont maintenant calculées dynamiquement en fonction du nombre de types de remplissage, des entrées/sorties et du nombre de recettes
-
-v1.0.0.0 Journal des modifications :
-- Aperçu des productions : Visualisez toutes les productions avec niveaux de remplissage, capacités, revenus mensuels et type de traitement
-- Basculer les vues : Basculez entre entrées, sorties et recettes
-- Suivi financier : Consultez les revenus mensuels, coûts et bénéfice net de chaque production
-- Gestion automatique : Active/désactive automatiquement les productions en fonction de la disponibilité des entrées et de la capacité de sortie
-- Export CSV : Exportez toutes les données de production pour analyse externe
-- Support multilingue : Disponible en 12 langues
 ]]></fr>
     </description>
     
     <l10n filenamePrefix="languages/l10n"/>
-    <iconFilename>icon_NXProductionsOverview.dds</iconFilename>
+    <iconFilename>icon_ProductionsOverview.dds</iconFilename>
     <multiplayer supported="true" />
     <extraSourceFiles>
         <sourceFile filename="ProductionOverview.lua" />
         <sourceFile filename="RegisterPlayerActionEvents.lua" />
-        <sourceFile filename="ProductionSettings.lua" />
-        <sourceFile filename="ProductionAutoManager.lua" />
+        <sourceFile filename="core/ProductionNotifications.lua" />
+        <sourceFile filename="core/ProductionSettings.lua" />
+        <sourceFile filename="core/ProductionAutoManager.lua" />
     </extraSourceFiles>
     <actions>
         <action name="SHOW_PRODUCTION_DLG" category="SYSTEM" />

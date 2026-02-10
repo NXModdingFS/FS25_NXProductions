@@ -30,8 +30,8 @@
                 <Text profile="ProductionDlgHeaderLeft" position="275px 0px" size="150px 40.77px" text="$l10n_ui_productionDlg_hbRecipe"/>
                 <Text profile="ProductionDlgHeaderLeft" position="475px 0px" size="150px 40.77px" text="$l10n_ui_productionDlg_hbCyclesPerMonth"/>
                 <Text profile="ProductionDlgHeaderLeft" position="675px 0px" size="150px 40.77px" text="$l10n_ui_productionDlg_hbSupplyDuration"/>
-                <Text profile="ProductionDlgHeaderLeft" position="875px 0px" size="150px 40.77px" text="$l10n_ui_productionDlg_hbOutputMode"/>
-                <Text profile="ProductionDlgHeaderLeft" position="1075px 0px" size="150px 40.77px" text="$l10n_ui_productionDlg_hbLocation"/>
+                <Text profile="ProductionDlgHeaderLeft" position="898px 0px" size="110px 40.77px" text="$l10n_ui_productionDlg_hbOutputMode"/>
+                <Text profile="ProductionDlgHeaderLeft" position="1015px 0px" size="165px 40.77px" text="$l10n_ui_productionDlg_hbLocation"/>
                 <Text profile="ProductionDlgHeaderLeft" position="1175px 0px" size="70px 40.77px" text="$l10n_ui_productionDlg_hbStatus"/>
                 <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
             </Bitmap>
@@ -52,10 +52,10 @@
                     <Text profile="ProductionDlgRowCellLeft" position="698px 0px" size="177px 35px" name="fillCapacity3" textSize="12px"/>
                     
                     <Bitmap position="875px 8px" size="18px 18px" name="fillIcon4" imageColor="1 1 1 1" />
-                    <Text profile="ProductionDlgRowCellLeft" position="898px 0px" size="177px 35px" name="fillCapacity4" textSize="12px"/>
+                    <Text profile="ProductionDlgRowCellLeft" position="898px 0px" size="110px 35px" name="fillCapacity4" textSize="12px"/>
                     
-                    <Bitmap position="1075px 8px" size="18px 18px" name="fillIcon5" imageColor="1 1 1 1" />
-                    <Text profile="ProductionDlgRowCellLeft" position="1098px 0px" size="117px 35px" name="fillCapacity5" textSize="12px"/>
+                    <Bitmap position="1015px 8px" size="18px 18px" name="fillIcon5" imageColor="1 1 1 1" />
+                    <Text profile="ProductionDlgRowCellLeft" position="1038px 0px" size="165px 35px" name="fillCapacity5" textSize="12px"/>
 
                   
                     <Bitmap position="275px 43px" size="18px 18px" name="fillIcon6" imageColor="1 1 1 1" />
@@ -68,13 +68,13 @@
                     <Text profile="ProductionDlgRowCellLeft" position="698px 35px" size="177px 35px" name="fillCapacity8" textSize="12px"/>
                     
                     <Bitmap position="875px 43px" size="18px 18px" name="fillIcon9" imageColor="1 1 1 1" />
-                    <Text profile="ProductionDlgRowCellLeft" position="898px 35px" size="177px 35px" name="fillCapacity9" textSize="12px"/>
+                    <Text profile="ProductionDlgRowCellLeft" position="898px 35px" size="110px 35px" name="fillCapacity9" textSize="12px"/>
                     
-                    <Bitmap position="1075px 43px" size="18px 18px" name="fillIcon10" imageColor="1 1 1 1" />
-                    <Text profile="ProductionDlgRowCellLeft" position="1098px 35px" size="117px 35px" name="fillCapacity10" textSize="12px"/>
+                    <Bitmap position="1015px 43px" size="18px 18px" name="fillIcon10" imageColor="1 1 1 1" />
+                    <Text profile="ProductionDlgRowCellLeft" position="1038px 35px" size="165px 35px" name="fillCapacity10" textSize="12px"/>
                     
                    
-                    <Text profile="ProductionDlgRowCellLeft" position="1180px 0px" size="65px 70px" name="statusText" textSize="12px"/>
+                    <Text profile="ProductionDlgRowCellLeft" position="1175px 0px" size="70px 70px" name="statusText" textSize="12px"/>
                 </ListItem>
             </SmoothList>
 

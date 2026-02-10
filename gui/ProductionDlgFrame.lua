@@ -814,28 +814,6 @@ end
 function ProductionDlgFrame:onClickToggle()
 	self.showInputs = not self.showInputs
 	self:updateToggleButtonText()
-	
-	
-	self:loadProductionData()
-	self:buildDisplayRows()
-	self.overviewTable:reloadData()
-end
-
-
-function ProductionDlgFrame:onClickToggle()
-	self.showInputs = not self.showInputs
-	self:updateToggleButtonText()
-	
-
-	self:loadProductionData()
-	self:buildDisplayRows()
-	self.overviewTable:reloadData()
-end
-
-
-function ProductionDlgFrame:onClickToggle()
-	self.showInputs = not self.showInputs
-	self:updateToggleButtonText()
 	self:buildDisplayRows()
 	self.overviewTable:reloadData()
 end
@@ -861,21 +839,10 @@ function ProductionDlgFrame:onClickExportCSV()
 		savegameName, year, monthNumber, dayNumber)
 
 	local modsDir = getUserProfileAppPath() .. "modSettings"
-	local exportDir = modsDir .. "/FS25_NXProductionsDump"
+	local exportDir = modsDir .. "/ProductionManagerDump"
 	createFolder(exportDir)
 	
 	local filepath = exportDir .. "/" .. filename
-	
-	local testFile = io.open(filepath, "r")
-	if testFile then
-		testFile:close()
-		local file = io.open(filepath, "w")
-		if file == nil then
-			InfoDialog.show("Export Failed: File is open in another program")
-			return
-		end
-		file:close()
-	end
 	
 	local file = io.open(filepath, "w")
 	if file == nil then
@@ -1044,7 +1011,7 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 				local logistic = row.logistic
 				
 				
-				local recipeStatus = g_i18n:getText("ui_production_status_inactive")
+				local recipeStatus = g_i18n:getText("ui_prodmgr_status_inactive")
 				local statusColor = {1, 0, 0, 1} 
 
 				local productionPoint = prod.productionPoint
@@ -1053,10 +1020,10 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 						
 						if production.name == logistic.recipe then
 							if production.status == ProductionPoint.PROD_STATUS.RUNNING then
-								recipeStatus = g_i18n:getText("ui_production_status_active")
+								recipeStatus = g_i18n:getText("ui_prodmgr_status_active")
 								statusColor = {0, 1, 0, 1} 
 							elseif production.status == ProductionPoint.PROD_STATUS.MISSING_INPUTS then
-								recipeStatus = g_i18n:getText("ui_production_status_active") .. "(!)"
+								recipeStatus = g_i18n:getText("ui_prodmgr_status_active") .. "(!)"
 								statusColor = {1, 0.6, 0, 1} 
 							end
 							break
@@ -1113,9 +1080,12 @@ function ProductionDlgFrame:populateCellForItemInSection(list, section, index, c
 				cell:getAttribute("fillCapacity4"):setTextColor(modeColor[1], modeColor[2], modeColor[3], modeColor[4])
 				cell:getAttribute("fillCapacity4"):setVisible(true)
 				
-			
+				-- Destination
 				cell:getAttribute("fillIcon5"):setVisible(false)
-				cell:getAttribute("fillCapacity5"):setText(logistic.destination)
+				
+				local destText = logistic.destination
+				
+				cell:getAttribute("fillCapacity5"):setText(destText)
 				local destColor = logistic.destinationColor or {1, 1, 1, 1}
 				cell:getAttribute("fillCapacity5"):setTextColor(destColor[1], destColor[2], destColor[3], destColor[4])
 				cell:getAttribute("fillCapacity5"):setVisible(true)
