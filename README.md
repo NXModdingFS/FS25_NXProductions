@@ -2,7 +2,7 @@
 > Edits of this mod file are not permitted.
 > You may submit a bug report via the Github Repo, however, the prefered method is through our discord this allows us to easily ask questions sould I need more evidence https://discord.gg/aDTTXAhE2m
 
-<ins>**NX Productions**</ins> (ModHub v1.0.0.0 - Developement v1.0.0.2)
+<ins>**NX Productions**</ins> (ModHub v1.0.0.0)
 
 A production management mod for Farming Simulator 25 that provides an overview of all your production facilities with automatic management capabilities.
 
